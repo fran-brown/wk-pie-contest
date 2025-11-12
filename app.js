@@ -1,7 +1,7 @@
 // ============================================
 // CONFIGURATION
 // ============================================
-const USE_MOCK_DATA = true; // Set to true for testing without API
+const USE_MOCK_DATA = false; // Set to true for testing without API
 
 const CONFIG = {
   // Your Givebutter API credentials
@@ -25,14 +25,14 @@ const CONFIG = {
   karaokeBracket: {
     // Round 1 (8 matches, 16 contestants)
     round1: [
-      { team1: 'Ada Jackson', team2: 'Becky Brinkerhoff' },
-      { team1: 'Caleb Jensen', team2: 'David Henriquez' },
-      { team1: 'Ellie Jones', team2: 'Eloe Gill-Williams' },
-      { team1: 'Felipe Riberio', team2: 'Fran Brown' },
-      { team1: 'Galen Kary', team2: 'Gelareh Dehnad' },
-      { team1: 'Jacobi Mehringer', team2: 'Jane Monaghan' },
-      { team1: 'Jared Randle', team2: 'Jason Strickland' },
-      { team1: 'Jojo Ball', team2: 'Jovan Lim & Priya Moorthy' },
+      { team1: 'Caleb Jensen', team2: 'Jane Monaghan' },
+      { team1: 'Ellie Jones', team2: 'Katie Schaller' },
+      { team1: 'Mariah Mercier', team2: 'Nai Lucifora' },
+      { team1: 'Jason Strickland', team2: 'Lloyd Winter' },
+      { team1: 'Becky Brinkerhoff', team2: 'Gelareh Dehnad' },
+      { team1: 'Jared Randle', team2: 'Fran Brown' },
+      { team1: 'Laura Wood', team2: 'Siobhan Robinson' },
+      { team1: 'David Henriquez', team2: 'Felipe Riberio' },
     ],
     // Round 2 (4 matches, 8 contestants) - Will be filled as you advance winners
     round2: [
@@ -52,14 +52,14 @@ const CONFIG = {
   
   lipSyncBracket: {
     round1: [
-      { team1: 'Kacey Kelley', team2: 'Laura Wood' },
-      { team1: 'Lauren Hill Vaughan', team2: 'Lindsay Varquez' },
-      { team1: 'Maisie Plew', team2: 'Mariah Mercier' },
-      { team1: 'MJ', team2: 'Molly Dyson' },
-      { team1: 'Nai Lucifora', team2: 'Paige Fitzmaurice' },
-      { team1: 'Paris Fontes-Michel', team2: 'Siobhan Robinson' },
-      { team1: 'Will Curtis', team2: 'Ada Jackson' },
-      { team1: 'Becky Brinkerhoff', team2: 'Caleb Jensen' },
+      { team1: 'MJ', team2: 'Maisie Plew' },
+      { team1: 'Lindsay Varquez', team2: 'Galen Kary' },
+      { team1: 'Paige Fitzmaurice', team2: 'Jacobi Mehringer' },
+      { team1: 'Ada Jackson', team2: 'Will Curtis' },
+      { team1: 'Eloe Gill-Williams (Caldera)', team2: 'Lauren Hill' },
+      { team1: 'Paris Fontes-Michel', team2: 'Maile Levy' },
+      { team1: 'Jojo Ball', team2: 'Kacey Kelley' },
+      { team1: 'Jovan Lim & Priya Moorthy', team2: 'Tasha Danner' },
     ],
     round2: [
       { team1: '', team2: '' },
