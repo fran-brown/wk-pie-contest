@@ -5,7 +5,7 @@ const USE_MOCK_DATA = true; // Set to true for testing without API
 
 const CONFIG = {
   // Your Givebutter API credentials
-  apiKey: 'gb_live_8406|OC8orSbCvsMy6H4R8gFCfSKgkv7f2RiKeYUHSlmv',
+  apiKey: '8406|OC8orSbCvsMy6H4R8gFCfSKgkv7f2RiKeYUHSlmv',
   campaignId: 'ipQ6Hw',
   
   // Fundraising goal
