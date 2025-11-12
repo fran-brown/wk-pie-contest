@@ -1,7 +1,10 @@
+// ============================================
+// CONFIGURATION
+// ============================================
 const USE_MOCK_DATA = true; // Set to true for testing without API
 
 const CONFIG = {
-  // Givebutter API credentials
+  // Your Givebutter API credentials
   apiKey: 'YOUR_API_KEY_HERE',
   campaignId: 'ipQ6Hw',
   
@@ -9,8 +12,16 @@ const CONFIG = {
   goalAmount: 80000,
   refreshInterval: 15000, // 15 seconds
   
+  // Brand colors
+  colors: {
+    primary: '#72c8f1',
+    orange: '#f15a22',
+    pink: '#f7b7d3',
+    yellow: '#fff56d'
+  },
+  
   // Tournament Brackets Configuration
-  // Map Givebutter team names to bracket positions
+  // Map your Givebutter team names to bracket positions
   karaokeBracket: {
     // Round 1 (8 matches, 16 contestants)
     round1: [
@@ -23,7 +34,7 @@ const CONFIG = {
       { team1: 'Jared Randle', team2: 'Jason Strickland' },
       { team1: 'Jojo Ball', team2: 'Jovan Lim & Priya Moorthy' },
     ],
-    // Round 2 (4 matches, 8 contestants) - Will be filled as winners advance
+    // Round 2 (4 matches, 8 contestants) - Will be filled as you advance winners
     round2: [
       { team1: '', team2: '' },
       { team1: '', team2: '' },
@@ -47,8 +58,8 @@ const CONFIG = {
       { team1: 'MJ', team2: 'Molly Dyson' },
       { team1: 'Nai Lucifora', team2: 'Paige Fitzmaurice' },
       { team1: 'Paris Fontes-Michel', team2: 'Siobhan Robinson' },
-      { team1: 'Will Curtis', team2: 'Ada Jackson' }, // Using Ada as placeholder
-      { team1: 'Becky Brinkerhoff', team2: 'Caleb Jensen' }, // Using as placeholders
+      { team1: 'Will Curtis', team2: 'Ada Jackson' },
+      { team1: 'Becky Brinkerhoff', team2: 'Caleb Jensen' },
     ],
     round2: [
       { team1: '', team2: '' },
@@ -196,48 +207,44 @@ class TournamentBracket {
     }
     
     return `
-      <div class="bg-white rounded-lg shadow-md overflow-hidden mb-4 border-2 ${
-        isWinner1 || isWinner2 ? 'border-green-500' : 'border-gray-200'
-      }">
+      <div class="bg-white rounded-lg shadow-md overflow-hidden mb-4" style="border: 3px solid ${isWinner1 || isWinner2 ? CONFIG.colors.yellow : '#e5e7eb'};">
         <!-- Team 1 -->
-        <div class="p-3 border-b ${isWinner1 ? 'bg-green-50' : 'bg-white'} relative">
-          ${isWinner1 ? '<div class="absolute left-2 top-2 text-green-600">👑</div>' : ''}
+        <div class="p-3 border-b relative" style="background-color: ${isWinner1 ? CONFIG.colors.yellow : 'white'}; border-bottom: 1px solid #e5e7eb;">
+          ${isWinner1 ? '<div class="absolute left-2 top-2 text-2xl">👑</div>' : ''}
           <div class="flex items-center justify-between ${match.team1 ? '' : 'opacity-50'}">
-            <div class="flex-1 ${isWinner1 ? 'pl-6' : ''}">
-              <div class="font-semibold text-sm ${!match.team1 ? 'text-gray-400' : 'text-gray-900'}">
+            <div class="flex-1" style="padding-left: ${isWinner1 ? '32px' : '0'};">
+              <div class="font-semibold text-sm" style="color: #333; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;">
                 ${match.team1 || 'TBD'}
               </div>
-              <div class="text-xs text-gray-500">${team1Data.donor_count || 0} donors</div>
+              <div class="text-xs" style="color: #666; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;">${team1Data.donor_count || 0} donors</div>
             </div>
             <div class="text-right">
-              <div class="font-bold ${isWinner1 ? 'text-green-600' : 'text-gray-700'}">
+              <div class="font-bold" style="color: ${isWinner1 ? CONFIG.colors.orange : '#333'}; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;">
                 ${this.formatCurrency(amount1)}
               </div>
               <div class="w-24 bg-gray-200 rounded-full h-2 mt-1">
-                <div class="bg-green-500 h-2 rounded-full transition-all duration-500"
-                     style="width: ${(amount1 / maxAmount) * 100}%"></div>
+                <div class="h-2 rounded-full transition-all duration-500" style="width: ${(amount1 / maxAmount) * 100}%; background-color: ${CONFIG.colors.orange};"></div>
               </div>
             </div>
           </div>
         </div>
         
         <!-- Team 2 -->
-        <div class="p-3 ${isWinner2 ? 'bg-green-50' : 'bg-white'} relative">
-          ${isWinner2 ? '<div class="absolute left-2 top-2 text-green-600">👑</div>' : ''}
+        <div class="p-3 relative" style="background-color: ${isWinner2 ? CONFIG.colors.yellow : 'white'};">
+          ${isWinner2 ? '<div class="absolute left-2 top-2 text-2xl">👑</div>' : ''}
           <div class="flex items-center justify-between ${match.team2 ? '' : 'opacity-50'}">
-            <div class="flex-1 ${isWinner2 ? 'pl-6' : ''}">
-              <div class="font-semibold text-sm ${!match.team2 ? 'text-gray-400' : 'text-gray-900'}">
+            <div class="flex-1" style="padding-left: ${isWinner2 ? '32px' : '0'};">
+              <div class="font-semibold text-sm" style="color: #333; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;">
                 ${match.team2 || 'TBD'}
               </div>
-              <div class="text-xs text-gray-500">${team2Data.donor_count || 0} donors</div>
+              <div class="text-xs" style="color: #666; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;">${team2Data.donor_count || 0} donors</div>
             </div>
             <div class="text-right">
-              <div class="font-bold ${isWinner2 ? 'text-green-600' : 'text-gray-700'}">
+              <div class="font-bold" style="color: ${isWinner2 ? CONFIG.colors.orange : '#333'}; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;">
                 ${this.formatCurrency(amount2)}
               </div>
               <div class="w-24 bg-gray-200 rounded-full h-2 mt-1">
-                <div class="bg-green-500 h-2 rounded-full transition-all duration-500"
-                     style="width: ${(amount2 / maxAmount) * 100}%"></div>
+                <div class="h-2 rounded-full transition-all duration-500" style="width: ${(amount2 / maxAmount) * 100}%; background-color: ${CONFIG.colors.orange};"></div>
               </div>
             </div>
           </div>
@@ -248,25 +255,25 @@ class TournamentBracket {
   
   renderBracket(bracket, title, color) {
     const rounds = [
-      { name: 'Round 1', matches: bracket.round1, grid: 'grid-cols-2' },
-      { name: 'Quarter Finals', matches: bracket.round2, grid: 'grid-cols-2' },
-      { name: 'Semi Finals', matches: bracket.round3, grid: 'grid-cols-1' },
-      { name: 'Finals', matches: [bracket.finals], grid: 'grid-cols-1' }
+      { name: 'Round 1', matches: bracket.round1 },
+      { name: 'Quarter Finals', matches: bracket.round2 },
+      { name: 'Semi Finals', matches: bracket.round3 },
+      { name: 'Finals', matches: [bracket.finals] }
     ];
     
     return `
       <div class="mb-12">
         <div class="text-center mb-6">
-          <h2 class="text-4xl font-bold ${color} mb-2">${title}</h2>
-          <div class="inline-block bg-gradient-to-r from-${color.split('-')[1]}-500 to-${color.split('-')[1]}-600 text-white px-6 py-2 rounded-full">
-            <span class="text-lg font-semibold">16 Contestants</span>
+          <h2 class="text-5xl font-bold mb-3" style="font-family: 'scatterplot-variable', sans-serif; color: ${color};">${title}</h2>
+          <div class="inline-block text-white px-6 py-2 rounded-full" style="background-color: ${color};">
+            <span class="text-lg font-semibold" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;">16 Contestants</span>
           </div>
         </div>
         
         <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
           ${rounds.map((round, roundIndex) => `
             <div>
-              <h3 class="text-xl font-bold text-gray-800 mb-4 text-center sticky top-0 bg-white py-2 z-10">
+              <h3 class="text-xl font-bold mb-4 text-center sticky top-0 py-2 z-10 rounded-lg" style="background-color: ${CONFIG.colors.primary}; color: white; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;">
                 ${round.name}
               </h3>
               <div class="space-y-4">
@@ -291,10 +298,10 @@ class TournamentBracket {
     
     if (this.loading) {
       root.innerHTML = `
-        <div class="min-h-screen flex items-center justify-center" style="background-color: #72c8f1;">
+        <div class="min-h-screen flex items-center justify-center" style="background-color: ${CONFIG.colors.primary};">
           <div class="text-center">
             <div class="animate-spin rounded-full h-16 w-16 border-b-4 border-white mx-auto mb-4"></div>
-            <p class="text-white text-lg font-sans">Loading tournament data...</p>
+            <p class="text-white text-lg" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;">Loading tournament data...</p>
           </div>
         </div>
       `;
@@ -302,52 +309,40 @@ class TournamentBracket {
     }
     
     root.innerHTML = `
-      <div class="min-h-screen p-4 pb-24" style="background-color: #72c8f1;">
+      <div class="min-h-screen p-4 pb-24" style="background-color: ${CONFIG.colors.primary};">
         <!-- Header -->
         <div class="max-w-7xl mx-auto">
           <div class="text-center py-8 mb-8 bg-white rounded-2xl shadow-lg">
-            <h1 class="text-6xl font-bold mb-3" style="font-family: 'scatterplot-variable', sans-serif; color: #72c8f1;">
+            <h1 class="text-6xl font-bold mb-3" style="font-family: 'scatterplot-variable', sans-serif; color: ${CONFIG.colors.primary};">
               W+K Holiday Giving Campaign
             </h1>
-            <p class="text-xl mb-4 font-sans" style="color: #333;">Karaoke vs Lip Sync Championship</p>
+            <p class="text-xl mb-4" style="color: #333; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;">Karaoke vs Lip Sync Championship</p>
             
             <!-- Total Raised -->
-            <div class="inline-block bg-gradient-to-r from-green-500 to-emerald-600 text-white px-8 py-4 rounded-full shadow-lg">
-              <div class="text-sm opacity-90">Total Raised</div>
-              <div class="text-4xl font-bold">${this.formatCurrency(this.totalRaised)}</div>
-              <div class="text-sm opacity-90">Goal: ${this.formatCurrency(CONFIG.goalAmount)}</div>
+            <div class="inline-block px-8 py-4 rounded-full shadow-lg" style="background-color: ${CONFIG.colors.orange};">
+              <div class="text-sm text-white opacity-90" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;">Total Raised</div>
+              <div class="text-4xl font-bold text-white" style="font-family: 'scatterplot-variable', sans-serif;">${this.formatCurrency(this.totalRaised)}</div>
+              <div class="text-sm text-white opacity-90" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;">Goal: ${this.formatCurrency(CONFIG.goalAmount)}</div>
             </div>
             
-            <div class="mt-4 text-sm text-gray-500">
+            <div class="mt-4 text-sm" style="color: #333; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;">
               <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
               </svg>
               Last updated: ${this.lastUpdate.toLocaleTimeString()}
-              ${USE_MOCK_DATA ? ' <span class="text-orange-600 font-semibold">🧪 MOCK DATA</span>' : ''}
+              ${USE_MOCK_DATA ? `<span class="font-semibold" style="color: ${CONFIG.colors.orange};">🧪 MOCK DATA</span>` : ''}
             </div>
           </div>
           
           <!-- View Toggle -->
           <div class="flex justify-center gap-4 mb-8">
-            <button id="view-both" class="px-6 py-3 rounded-lg font-semibold transition-all ${
-              this.activeView === 'both' 
-                ? 'bg-purple-600 text-white shadow-lg scale-105' 
-                : 'bg-white text-gray-700 hover:bg-gray-100'
-            }">
+            <button id="view-both" class="px-6 py-3 rounded-lg font-semibold transition-all" style="background-color: ${this.activeView === 'both' ? CONFIG.colors.orange : 'white'}; color: ${this.activeView === 'both' ? 'white' : '#333'}; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; ${this.activeView === 'both' ? 'box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); transform: scale(1.05);' : ''}">
               Both Brackets
             </button>
-            <button id="view-karaoke" class="px-6 py-3 rounded-lg font-semibold transition-all ${
-              this.activeView === 'karaoke' 
-                ? 'bg-purple-600 text-white shadow-lg scale-105' 
-                : 'bg-white text-gray-700 hover:bg-gray-100'
-            }">
+            <button id="view-karaoke" class="px-6 py-3 rounded-lg font-semibold transition-all" style="background-color: ${this.activeView === 'karaoke' ? CONFIG.colors.pink : 'white'}; color: ${this.activeView === 'karaoke' ? 'white' : '#333'}; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; ${this.activeView === 'karaoke' ? 'box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); transform: scale(1.05);' : ''}">
               🎤 Karaoke Only
             </button>
-            <button id="view-lipsync" class="px-6 py-3 rounded-lg font-semibold transition-all ${
-              this.activeView === 'lipsync' 
-                ? 'bg-pink-600 text-white shadow-lg scale-105' 
-                : 'bg-white text-gray-700 hover:bg-gray-100'
-            }">
+            <button id="view-lipsync" class="px-6 py-3 rounded-lg font-semibold transition-all" style="background-color: ${this.activeView === 'lipsync' ? CONFIG.colors.orange : 'white'}; color: ${this.activeView === 'lipsync' ? 'white' : '#333'}; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; ${this.activeView === 'lipsync' ? 'box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); transform: scale(1.05);' : ''}">
               💋 Lip Sync Only
             </button>
           </div>
@@ -355,11 +350,11 @@ class TournamentBracket {
           <!-- Brackets -->
           <div class="max-w-[1600px] mx-auto">
             ${this.activeView === 'both' || this.activeView === 'karaoke' 
-              ? this.renderBracket(CONFIG.karaokeBracket, '🎤 Karaoke Battle', 'text-purple-600') 
+              ? this.renderBracket(CONFIG.karaokeBracket, '🎤 Karaoke Battle', CONFIG.colors.pink) 
               : ''}
             
             ${this.activeView === 'both' || this.activeView === 'lipsync' 
-              ? this.renderBracket(CONFIG.lipSyncBracket, '💋 Lip Sync Battle', 'text-pink-600') 
+              ? this.renderBracket(CONFIG.lipSyncBracket, '💋 Lip Sync Battle', CONFIG.colors.orange) 
               : ''}
           </div>
         </div>
@@ -399,7 +394,7 @@ class TournamentBracket {
       <div class="fixed bottom-4 right-4 bg-white rounded-lg shadow-2xl p-4 border-2 border-gray-300 z-50">
         <div class="text-xs font-bold text-gray-500 mb-3">⚙️ ADMIN CONTROLS</div>
         
-        <button onclick="app.fetchData()" class="w-full px-4 py-2 bg-blue-600 text-white rounded text-sm font-semibold hover:bg-blue-700 mb-2">
+        <button onclick="app.fetchData()" class="w-full px-4 py-2 text-white rounded text-sm font-semibold hover:opacity-90 mb-2" style="background-color: ${CONFIG.colors.primary};">
           🔄 Refresh Now
         </button>
         
@@ -408,7 +403,7 @@ class TournamentBracket {
         </div>
         
         ${USE_MOCK_DATA ? `
-          <div class="mt-3 p-2 bg-orange-50 border border-orange-200 rounded text-xs text-orange-800">
+          <div class="mt-3 p-2 rounded text-xs text-white" style="background-color: ${CONFIG.colors.orange};">
             <strong>⚠️ Mock Mode</strong><br>
             Set USE_MOCK_DATA = false
           </div>
