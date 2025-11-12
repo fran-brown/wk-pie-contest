@@ -1,11 +1,8 @@
-// ============================================
-// CONFIGURATION
-// ============================================
 const USE_MOCK_DATA = true; // Set to true for testing without API
 
 const CONFIG = {
-  // Your Givebutter API credentials
-  apiKey: '8220|N6IMXbh66eh8joEe4KDu4ODdaTCYtwA2QuggHI7N',
+  // Givebutter API credentials
+  apiKey: 'YOUR_API_KEY_HERE',
   campaignId: 'ipQ6Hw',
   
   // Fundraising goal
@@ -13,7 +10,7 @@ const CONFIG = {
   refreshInterval: 15000, // 15 seconds
   
   // Tournament Brackets Configuration
-  // Map your Givebutter team names to bracket positions
+  // Map Givebutter team names to bracket positions
   karaokeBracket: {
     // Round 1 (8 matches, 16 contestants)
     round1: [
@@ -26,7 +23,7 @@ const CONFIG = {
       { team1: 'Jared Randle', team2: 'Jason Strickland' },
       { team1: 'Jojo Ball', team2: 'Jovan Lim & Priya Moorthy' },
     ],
-    // Round 2 (4 matches, 8 contestants) - Will be filled as you advance winners
+    // Round 2 (4 matches, 8 contestants) - Will be filled as winners advance
     round2: [
       { team1: '', team2: '' },
       { team1: '', team2: '' },
@@ -294,10 +291,10 @@ class TournamentBracket {
     
     if (this.loading) {
       root.innerHTML = `
-        <div class="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50 flex items-center justify-center">
+        <div class="min-h-screen flex items-center justify-center" style="background-color: #72c8f1;">
           <div class="text-center">
-            <div class="animate-spin rounded-full h-16 w-16 border-b-4 border-purple-600 mx-auto mb-4"></div>
-            <p class="text-gray-600">Loading tournament data...</p>
+            <div class="animate-spin rounded-full h-16 w-16 border-b-4 border-white mx-auto mb-4"></div>
+            <p class="text-white text-lg font-sans">Loading tournament data...</p>
           </div>
         </div>
       `;
@@ -305,14 +302,14 @@ class TournamentBracket {
     }
     
     root.innerHTML = `
-      <div class="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50 p-4 pb-24">
+      <div class="min-h-screen p-4 pb-24" style="background-color: #72c8f1;">
         <!-- Header -->
         <div class="max-w-7xl mx-auto">
           <div class="text-center py-8 mb-8 bg-white rounded-2xl shadow-lg">
-            <h1 class="text-5xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent mb-3">
-              Battle of the Talents
+            <h1 class="text-6xl font-bold mb-3" style="font-family: 'scatterplot-variable', sans-serif; color: #72c8f1;">
+              W+K Holiday Giving Campaign
             </h1>
-            <p class="text-xl text-gray-600 mb-4">Karaoke vs Lip Sync Championship</p>
+            <p class="text-xl mb-4 font-sans" style="color: #333;">Karaoke vs Lip Sync Championship</p>
             
             <!-- Total Raised -->
             <div class="inline-block bg-gradient-to-r from-green-500 to-emerald-600 text-white px-8 py-4 rounded-full shadow-lg">
