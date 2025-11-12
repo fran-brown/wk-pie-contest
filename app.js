@@ -7,6 +7,10 @@ const CONFIG = {
   // Your Givebutter API credentials
   apiKey: '8406|OC8orSbCvsMy6H4R8gFCfSKgkv7f2RiKeYUHSlmv',
   campaignId: '516562',
+
+  // Use proxy to avoid CORS issues
+  useProxy: true, // Set to false if you have your own backend
+  proxyUrl: 'https://corsproxy.io/?', // CORS proxy service
   
   // Fundraising goal
   goalAmount: 80000,
