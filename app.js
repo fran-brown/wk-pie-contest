@@ -1,7 +1,7 @@
 // ============================================
 // CONFIGURATION
 // ============================================
-const USE_MOCK_DATA = false; // Set to true for testing without API
+const USE_MOCK_DATA = true; // Set to true for testing without API
 
 const CONFIG = {
   // Your Givebutter API credentials
