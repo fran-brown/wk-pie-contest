@@ -5,7 +5,7 @@ const USE_MOCK_DATA = false; // Set to true for testing without API
 
 const CONFIG = {
   // Your Givebutter API credentials
-  apiKey: 'YOUR_API_KEY_HERE',
+  apiKey: 'gb_live_8406|OC8orSbCvsMy6H4R8gFCfSKgkv7f2RiKeYUHSlmv',
   campaignId: 'ipQ6Hw',
   
   // Fundraising goal
@@ -138,14 +138,21 @@ class TournamentBracket {
         this.lastUpdate = new Date();
         this.render();
       } else {
-        // Fetch teams from Givebutter
+       // Fetch teams from Givebutter
         const teamsRes = await fetch(
           `https://api.givebutter.com/v1/teams?campaign=${CONFIG.campaignId}`,
-          { headers: { 'Authorization': `Bearer ${CONFIG.apiKey}` } }
+          { 
+            headers: { 
+              'Authorization': `Bearer ${CONFIG.apiKey}`,
+              'Accept': 'application/json'
+            } 
+          }
         );
         
         if (!teamsRes.ok) {
-          throw new Error(`API error: ${teamsRes.status} - Check your API key`);
+          const errorText = await teamsRes.text();
+          console.error('API Response:', errorText);
+          throw new Error(`API error: ${teamsRes.status} - ${errorText}`);
         }
         
         const teamsData = await teamsRes.json();
@@ -340,10 +347,10 @@ class TournamentBracket {
               Both Brackets
             </button>
             <button id="view-karaoke" class="px-6 py-3 rounded-lg font-semibold transition-all" style="background-color: ${this.activeView === 'karaoke' ? CONFIG.colors.pink : 'white'}; color: ${this.activeView === 'karaoke' ? 'white' : '#333'}; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; ${this.activeView === 'karaoke' ? 'box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); transform: scale(1.05);' : ''}">
-              🎤 Karaoke Only
+              Karaoke Only
             </button>
             <button id="view-lipsync" class="px-6 py-3 rounded-lg font-semibold transition-all" style="background-color: ${this.activeView === 'lipsync' ? CONFIG.colors.orange : 'white'}; color: ${this.activeView === 'lipsync' ? 'white' : '#333'}; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; ${this.activeView === 'lipsync' ? 'box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); transform: scale(1.05);' : ''}">
-              💋 Lip Sync Only
+              Lip Sync Only
             </button>
           </div>
           
@@ -392,7 +399,7 @@ class TournamentBracket {
   renderAdminControls() {
     return `
       <div class="fixed bottom-4 right-4 bg-white rounded-lg shadow-2xl p-4 border-2 border-gray-300 z-50">
-        <div class="text-xs font-bold text-gray-500 mb-3">⚙️ ADMIN CONTROLS</div>
+        <div class="text-xs font-bold text-gray-500 mb-3">ADMIN CONTROLS</div>
         
         <button onclick="app.fetchData()" class="w-full px-4 py-2 text-white rounded text-sm font-semibold hover:opacity-90 mb-2" style="background-color: ${CONFIG.colors.primary};">
           🔄 Refresh Now
