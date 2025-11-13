@@ -74,6 +74,143 @@ const CONFIG = {
       { team1: '', team2: '' },
     ],
     finals: { team1: '', team2: '' },
+  },
+  // Bios and images for participants
+  // Note: key MUST exactly match the team name
+  // Manual bios and images for participants
+  // The key (e.g., "Caleb Jensen") MUST exactly match the team name.
+  participantBios: {
+    // --- Karaoke Bracket ---
+    "Caleb Jensen": {
+      bio: "",
+      image: "images/Caleb Jensen.png"
+    },
+    "Jane Monaghan": {
+      bio: "",
+      image: "images/Jane Monaghan.png"
+    },
+    "Ellie Jones": {
+      bio: "Beloved,\n\nYour money is going to Caldera anyway. You don't need me to tell you why that's great. But it is my duty to inform you of the many secondary benefits of voting for me.\n\nWith me in the running, this is no mere karaoke competition. This is a sound healing bath. My voice has been known to cure the common cold, re-align chakras, cause ecstatic visions, make your uncle agree with your politics during Thanksgiving dinner, and eliminate fertility issues.\n\nNow, I may not be able to hit every note in the world, but the notes that I DO hit - oh boy. It's something else.\n\nIf you're currently working with your therapist on self-esteem or impostor syndrome, you can rest easy knowing that voting for me is an affirmation of your own excellent taste. Next time you think “Why have I never been featured on WK Fitcheck?” you can tell yourself “No. Calm down. I voted for Ellie so I know I have good taste. It's THEM that's the problem. No panic attack today.”\n\nVoting for me will also help you connect with co-workers you haven't bonded with yet, because you know there's a 99% chance they're also going to vote for me. This is excellent fodder for elevator chats, and it could be the start of a beautiful friendship.",
+      image: "images/Ellie Jones.jpg"
+    },
+    "Katie Schaller": {
+      bio: "",
+      image: "images/Katie Schaller.jpeg"
+    },
+    "Mariah Mercier": {
+      bio: "Half pony, half woman, half dog. Donate and I will dress up like a puppy and perform my tail off for you. Send me to the finals and I promise to try really hard to probably not pee on the floor.",
+      image: "images/Mariah Mercier.jpg"
+    },
+    "Nai Lucifora": {
+      bio: "Let's donate to be good humans!",
+      image: "images/Nai_Lucifora.jpg"
+    },
+    "Jason Strickland": {
+      bio: "Numbers by day, high notes by night!",
+      image: "images/Jason Strickland.jpg"
+    },
+    "Lloyd Winter": {
+      bio: "",
+      image: "images/default.jpg"
+    },
+    "Becky Brinkerhoff": {
+      bio: "Hi. I'm Becky. I was trained in musical theater. This is my only outlet since selling out. ",
+      image: "images/Becky Brinkerhoff.jpeg"
+    },
+    "Gelareh Dehnad": {
+      bio: "Hello! My name is Gelareh (gelluhray) and I am 50% silly, 50% anxious! I have been described as a confetti cannon in a library! IYKYK. I love laughing, exclamation points, and donating to a good cause (wink, wink)! I hate snakes, celery, and restaurant waiting lists.",
+      image: "images/Gelareh Dehnad.jpg"
+    },
+    "Jared Randle": {
+      bio: "",
+      image: "images/Jared Randle.jpeg"
+    },
+    "Fran Brown": {
+      bio: "Time to seal the Honmoon >:)",
+      image: "images/Frances Brown.jpeg"
+    },
+    "Laura Wood": {
+      bio: "Karaoke is my drug. It's not often that drugs raise money for charity, so this is cool!",
+      image: "images/Laura Wood.jpg"
+    },
+    "Siobhan Robinson": {
+      bio: "Every kid deserves the opportunity to gtfo the city and connect with nature! Caldera is a beautiful place and I'm excited to help bring them some $$$ to continue their super important mission.",
+      image: "images/Siobhan Robinson.png"
+    },
+    "David Henriquez": {
+      bio: "Hi! I'm David and I am here for the vibez so let's vibe out. help me get to the finals with your cash that will ultimately help our Caldera kids -- you can pay ca$h, venmo, zelle, applepay, anything helps -- LFG",
+      image: "images/David Henriquez.jpg"
+    },
+    "Felipe Riberio": {
+      bio: "",
+      image: "images/felipe ribeiro.png"
+    },
+
+    // --- Lip Sync Bracket ---
+    "MJ": {
+      bio: "",
+      image: "images/MJ.jpg"
+    },
+    "Maisie Plew": {
+      bio: "Help me embarrass myself for ✨charity✨",
+      image: "images/Maisie Plew.png"
+    },
+    "Lindsay Varquez": {
+      bio: "i don't bake pies but i bake sub-par lip syncing performances. ",
+      image: "images/Lindsay Varquez.jpeg"
+    },
+    "Galen Kary": {
+      bio: "",
+      image: "images/Galen Kary.jpg"
+    },
+    "Paige Fitzmaurice": {
+      bio: "For this tasty challenge, I'm serving the right kind of pie. The ultimate father figure of flavor. More bake and even more shake. ",
+      image: "images/Paige Fitzmaurice.png"
+    },
+    "Jacobi Mehringer": {
+      bio: "",
+      image: "images/Jacobi.png"
+    },
+    "Ada Jackson": {
+      bio: "Super excited to live out my Zendaya, Channing Tatum, Tom Holland, LL Cool J dreams!!! I think I was born for something like this and need everyone to lock tf in and donate so that I can perform! Thank you and your welcome in advance! :)",
+      image: "images/Ada Jackson.jpg"
+    },
+    "Will Curtis": {
+      bio: "",
+      image: "images/Will Curtis.jpeg"
+    },
+    "Eloe Gill-Williams": {
+      bio: "Eloe is a Caldera alumni who has personally benefitted in his own life from the Caldera program. Caldera put a camera in his hands in 2004 and he has made a career of his skillset and creative vision. He has seen the first hand positive impact on his community. The now multi-generation spanning program has and continues to create access to the creative arts and outdoors. Eloe dedicates his time to the program to continue teaching young learners in Caldera. Exploring and expanding the creative intuition and vision Dan Wieden had for a more diverse and inclusive world through art and equity. Why choose Eloe ? Eloe comes from a long line of lip sync'ers, some of the best to have ever done it. This northeast Portland prodigy was raised amongst Mics & Men and his evolution from Caldera Kid to Master of Ceremony, Microphone Ruler is unmatched. When Eloe is not teaching the youth of today working to build a better world for tomorrow. He can be found clutching many mics in an effort to one day clench the title.",
+      image: "images/Eloe_Gill-Williams.jpg"
+    },
+    "Lauren Hill Vaughan": {
+      bio: "",
+      image: "images/Lauren Hill Vaugh.jpeg"
+    },
+    "Paris Fontes-Michel": {
+      bio: "",
+      image: "images/paris Fontes Michel.jpg"
+    },
+    "Maile Levy": {
+      bio: "I guess I'll shake ass for the kids (& Jinnina)",
+      image: "images/Maile Levy.jpeg"
+    },
+    "Jojo Ball": {
+      bio: "",
+      image: "images/Jojo Ball.jpg"
+    },
+    "Kacey Kelley": {
+      bio: "",
+      image: "images/default.jpg"
+    },
+    "Jovan Lim & Priya Moorthy": {
+      bio: "",
+      image: "images/default.jpg"
+    },
+    "Tasha Danner": {
+      bio: "I'm Tasha and I work at Caldera. I'm in Accounting, so I'll be able to count how generous you are being! Come support our amazing youth! ",
+      image: "images/Tasha Danner - Tasha Danner.jpg"
+    }
   }
 };
 
@@ -110,7 +247,7 @@ class TournamentBracket {
     this.loading = true;
     this.error = null;
     this.lastUpdate = new Date();
-    this.activeView = 'both'; // 'both', 'karaoke', 'lipsync'
+    this.activeView = 'bracket'; // 'bracket', 'participants'
     this.bracketStage = { karaoke: 0, lipsync: 0 };
     
     this.init();
@@ -390,6 +527,76 @@ class TournamentBracket {
     }
     return { round1, round2, round3, finals };
   }
+
+  // ===== NEW FUNCTION =====
+  // Gets all unique participant names from the bracket configs
+  getAllParticipantNames() {
+    const names = new Set();
+    
+    // Get names from Karaoke bracket
+    CONFIG.karaokeBracket.round1.forEach(match => {
+      if (match.team1) names.add(match.team1);
+      if (match.team2) names.add(match.team2);
+    });
+    
+    // Get names from Lip Sync bracket
+    CONFIG.lipSyncBracket.round1.forEach(match => {
+      if (match.team1) names.add(match.team1);
+      if (match.team2) names.add(match.team2);
+    });
+    
+    return Array.from(names).sort(); // Return a sorted array
+  }
+
+  // Renders the participants list view
+  renderParticipantsList() {
+    const allNames = this.getAllParticipantNames();
+    
+    return `
+      <div classgrid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        ${allNames.map(name => {
+          const teamData = this.teamData[name] || {};
+          const bioData = CONFIG.participantBios[name] || {};
+          
+          const raised = teamData.total_donations || 0;
+          const donors = teamData.donor_count || 0;
+          
+          return `
+            <div class="bg-white rounded-lg shadow-lg overflow-hidden flex flex-col">
+              ${bioData.image ? `<img class="w-full h-48 object-cover" src="${bioData.image}" alt="${name}">` : '<div class="w-full h-48 bg-gray-200 flex items-center justify-center text-gray-400">No Image</div>'}
+              
+              <div class="p-4 flex flex-col flex-grow">
+                <h3 class="text-2xl font-bold font-display mb-2" style="color: ${CONFIG.colors.primary};">${name}</h3>
+                
+                <p class="text-sm text-gray-600 mb-4 flex-grow">
+                  ${bioData.bio || '<em>No bio available.</em>'}
+                </p>
+                
+                <div class="flex justify-between items-center mb-4 text-sm">
+                  <div class="text-gray-700">
+                    <span class="font-bold text-lg" style="color: ${CONFIG.colors.orange};">${this.formatCurrency(raised)}</span> raised
+                  </div>
+                  <div class="text-gray-500">${donors} donors</div>
+                </div>
+                
+                ${teamData.url ? `
+                  <a href="${teamData.url}" target="_blank" rel="noopener noreferrer" 
+                     class="block w-full text-center text-white px-4 py-2 rounded font-semibold transition-all hover:opacity-80" 
+                     style="background-color: ${CONFIG.colors.primary};">
+                    Donate to ${name.split(' ')[0]}
+                  </a>
+                ` : `
+                  <div class="block w-full text-center text-gray-400 bg-gray-100 px-4 py-2 rounded font-semibold">
+                    Donation link not active
+                  </div>
+                `}
+              </div>
+            </div>
+          `;
+        }).join('')}
+      </div>
+    `;
+  }
   
   render() {
     const root = document.getElementById('root');
@@ -456,33 +663,29 @@ class TournamentBracket {
           <!-- View Toggle -->
           <div class="flex justify-center mb-8">
             <div class="inline-flex bg-white rounded-lg p-1 shadow-md">
-              <button id="view-both" class="px-5 py-2 rounded-md font-semibold transition-all text-sm" 
-                      style="background-color: ${this.activeView === 'both' ? CONFIG.colors.orange : 'transparent'}; 
-                             color: ${this.activeView === 'both' ? 'white' : '#333'};">
-                Both Brackets
+              <button id="view-bracket" class="px-6 py-2 rounded-md font-semibold transition-all text-sm" 
+                      style="background-color: ${this.activeView === 'bracket' ? CONFIG.colors.orange : 'transparent'}; 
+                             color: ${this.activeView === 'bracket' ? 'white' : '#333'};">
+                Bracket View
               </button>
-              <button id="view-karaoke" class="px-5 py-2 rounded-md font-semibold transition-all text-sm" 
-                      style="background-color: ${this.activeView === 'karaoke' ? CONFIG.colors.pink : 'transparent'}; 
-                             color: ${this.activeView === 'karaoke' ? 'white' : '#333'};">
-                Karaoke Only
-              </button>
-              <button id="view-lipsync" class="px-5 py-2 rounded-md font-semibold transition-all text-sm" 
-                      style="background-color: ${this.activeView === 'lipsync' ? CONFIG.colors.pink : 'transparent'}; 
-                             color: ${this.activeView === 'lipsync' ? 'white' : '#333'};">
-                Lip Sync Only
+              <button id="view-participants" class="px-6 py-2 rounded-md font-semibold transition-all text-sm" 
+                      style="background-color: ${this.activeView === 'participants' ? CONFIG.colors.pink : 'transparent'}; 
+                             color: ${this.activeView === 'participants' ? 'white' : '#333'};">
+                Participants
               </button>
             </div>
           </div>
           
           <!-- Brackets -->
-          <div class="max-w-[1600px] mx-auto lg:grid lg:grid-cols-2 lg:gap-8">
-            ${this.activeView === 'both' || this.activeView === 'karaoke' 
-              ? this.renderBracket(this.fillBracketToStage(CONFIG.karaokeBracket, this.bracketStage.karaoke), 'Karaoke Battle', CONFIG.colors.pink) 
-              : ''}
-            
-            ${this.activeView === 'both' || this.activeView === 'lipsync' 
-              ? this.renderBracket(this.fillBracketToStage(CONFIG.lipSyncBracket, this.bracketStage.lipsync), 'Lip Sync Battle', CONFIG.colors.pink) 
-              : ''}
+          <div class="max-w-[1600px] mx-auto">
+            ${this.activeView === 'bracket' ? `
+              <div class="lg:grid lg:grid-cols-2 lg:gap-8">
+                ${this.renderBracket(this.fillBracketToStage(CONFIG.karaokeBracket, this.bracketStage.karaoke), 'Karaoke Battle', CONFIG.colors.pink)}
+                ${this.renderBracket(this.fillBracketToStage(CONFIG.lipSyncBracket, this.bracketStage.lipsync), 'Lip Sync Battle', CONFIG.colors.pink)}
+              </div>
+            ` : `
+              ${this.renderParticipantsList()}
+            `}
           </div>
         </div>
       </div>
@@ -545,13 +748,11 @@ class TournamentBracket {
   }
   
   attachEventListeners() {
-    const viewBoth = document.getElementById('view-both');
-    const viewKaraoke = document.getElementById('view-karaoke');
-    const viewLipsync = document.getElementById('view-lipsync');
+    const viewBracket = document.getElementById('view-bracket');
+    const viewParticipants = document.getElementById('view-participants');
     
-    if (viewBoth) viewBoth.onclick = () => { this.activeView = 'both'; this.render(); };
-    if (viewKaraoke) viewKaraoke.onclick = () => { this.activeView = 'karaoke'; this.render(); };
-    if (viewLipsync) viewLipsync.onclick = () => { this.activeView = 'lipsync'; this.render(); };
+    if (viewBracket) viewBracket.onclick = () => { this.activeView = 'bracket'; this.render(); };
+    if (viewParticipants) viewParticipants.onclick = () => { this.activeView = 'participants'; this.render(); };
   }
 }
 
