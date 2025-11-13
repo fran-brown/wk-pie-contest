@@ -5,7 +5,6 @@ const USE_MOCK_DATA = false; // Set to true for testing without API
 
 const CONFIG = {
   // Your Givebutter API credentials
-  apiKey: '8406|OC8orSbCvsMy6H4R8gFCfSKgkv7f2RiKeYUHSlmv',
   campaignId: '516562',
   
   // Fundraising goal
@@ -60,7 +59,7 @@ const CONFIG = {
       { team1: 'Lindsay Varquez', team2: 'Galen Kary' },
       { team1: 'Paige Fitzmaurice', team2: 'Jacobi Mehringer' },
       { team1: 'Ada Jackson', team2: 'Will Curtis' },
-      { team1: 'Eloe Gill-Williams (Caldera)', team2: 'Lauren Hill' },
+      { team1: 'Eloe Gill-Williams', team2: 'Lauren Hill Vaughan' },
       { team1: 'Paris Fontes-Michel', team2: 'Maile Levy' },
       { team1: 'Jojo Ball', team2: 'Kacey Kelley' },
       { team1: 'Jovan Lim & Priya Moorthy', team2: 'Tasha Danner' },
@@ -142,69 +141,67 @@ class TournamentBracket {
         this.loading = false;
         this.lastUpdate = new Date();
         this.render();
-      } else {
-       
-        // Fetch teams from Givebutter via PHP proxy
-        const proxiedUrl = `${CONFIG.apiProxyUrl}?endpoint=teams`;
-        console.log('Fetching from:', proxiedUrl);
-        const teamsRes = await fetch(proxiedUrl, {
-          method: 'GET',
-          headers: {
-            'Accept': 'application/json'
-          }
-        });
+        return; // Exit function
+      } 
+      
+      // ===================================
+      // START: NEW NETLIFY FETCH LOGIC
+      // ===================================
 
-        if (!teamsRes.ok) {
-          const errorText = await teamsRes.text();
-          console.error('API Response Status:', teamsRes.status);
-          console.error('API Response:', errorText);
-          throw new Error(`API error: ${teamsRes.status} - Check API key and campaign ID`);
-        }
+      // This is the auto-generated path to your new Netlify function
+      const proxiedUrl = '/.netlify/functions/givebutter'; 
+      
+      console.log('Fetching from Netlify proxy:', proxiedUrl);
+      
+      const teamsRes = await fetch(proxiedUrl, {
+        method: 'GET',
+        headers: { 'Accept': 'application/json' }
+      });
 
-        const responseText = await teamsRes.text();
-        console.log('Raw API Response:', responseText);
-        
-        if (!responseText || responseText.trim() === '') {
-          throw new Error('API returned empty response');
-        }
-
-        let teamsData;
-        try {
-          const trimmed = responseText.trim();
-          if (trimmed.startsWith('<?php') || trimmed.startsWith('<')) {
-            throw new Error('Proxy returned non-JSON. Ensure PHP is executed and use absolute apiProxyUrl when cross-domain.');
-          }
-          teamsData = JSON.parse(responseText);
-        } catch (parseErr) {
-          console.error('JSON Parse Error:', parseErr);
-          console.error('Response text:', responseText.substring(0, 500));
-          throw new Error(`Failed to parse API response: ${parseErr.message}`);
-        }
-
-        console.log('Teams data received:', teamsData);
-        
-        // Process team data - key by team name
-        const processedTeams = {};
-        let total = 0;
-    
-         if (teamsData.data && Array.isArray(teamsData.data)) {
-          teamsData.data.forEach(team => {
-            processedTeams[team.name] = {
-              name: team.name,
-              total_donations: team.total_donations || 0,
-              donor_count: team.donor_count || 0,
-              url: team.url
-            };
-            total += team.total_donations || 0;
-          });
-        }
-        
-        this.teamData = processedTeams;
-        this.totalRaised = total;
-        this.loading = false;
-        this.lastUpdate = new Date();
-        this.render();
+      if (!teamsRes.ok) {
+        const errorText = await teamsRes.text();
+        throw new Error(`Proxy error (${teamsRes.status}): ${errorText}`);
       }
+
+      const proxyResponse = await teamsRes.json();
+      
+      // Check if the proxy function itself returned an error
+      if (proxyResponse.error) {
+          throw new Error(`API Error via proxy: ${proxyResponse.error}`);
+      }
+      
+      // The proxy returns { data: [...] }
+      const allTeams = proxyResponse.data;
+      console.log('All teams fetched via proxy:', allTeams);
+      
+      const processedTeams = {};
+      let total = 0;
+      
+      allTeams.forEach(team => {
+        // **THIS IS THE CRITICAL FIX**
+        // We map the API fields ('raised', 'supporters')
+        // to the fields your app expects ('total_donations', 'donor_count').
+        const amount = team.raised || 0; 
+        
+        processedTeams[team.name] = {
+          name: team.name,
+          total_donations: amount,              // Map 'raised' to 'total_donations'
+          donor_count: team.supporters || 0,  // Map 'supporters' to 'donor_count'
+          url: team.url
+        };
+        total += amount;
+      });
+      
+      // ===================================
+      // END: NEW NETLIFY FETCH LOGIC
+      // ===================================
+        
+      this.teamData = processedTeams;
+      this.totalRaised = total;
+      this.loading = false;
+      this.lastUpdate = new Date();
+      this.render();
+
     } catch (err) {
       console.error('Error fetching data:', err);
       this.error = err.message;
