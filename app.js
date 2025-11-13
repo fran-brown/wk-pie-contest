@@ -443,11 +443,11 @@ class TournamentBracket {
           <!-- Brackets -->
           <div class="max-w-[1600px] mx-auto">
             ${this.activeView === 'both' || this.activeView === 'karaoke' 
-              ? this.renderBracket(this.fillBracketToStage(CONFIG.karaokeBracket, this.bracketStage.karaoke), '🎤 Karaoke Battle', CONFIG.colors.pink) 
+              ? this.renderBracket(this.fillBracketToStage(CONFIG.karaokeBracket, this.bracketStage.karaoke), 'Karaoke Battle', CONFIG.colors.pink) 
               : ''}
             
             ${this.activeView === 'both' || this.activeView === 'lipsync' 
-              ? this.renderBracket(this.fillBracketToStage(CONFIG.lipSyncBracket, this.bracketStage.lipsync), '💋 Lip Sync Battle', CONFIG.colors.orange) 
+              ? this.renderBracket(this.fillBracketToStage(CONFIG.lipSyncBracket, this.bracketStage.lipsync), 'Lip Sync Battle', CONFIG.colors.orange) 
               : ''}
           </div>
         </div>
@@ -514,22 +514,10 @@ class TournamentBracket {
     const viewBoth = document.getElementById('view-both');
     const viewKaraoke = document.getElementById('view-karaoke');
     const viewLipsync = document.getElementById('view-lipsync');
-    const advanceBtn = document.getElementById('advance-bracket');
     
     if (viewBoth) viewBoth.onclick = () => { this.activeView = 'both'; this.render(); };
     if (viewKaraoke) viewKaraoke.onclick = () => { this.activeView = 'karaoke'; this.render(); };
     if (viewLipsync) viewLipsync.onclick = () => { this.activeView = 'lipsync'; this.render(); };
-    if (advanceBtn) advanceBtn.onclick = () => {
-      if (this.activeView === 'karaoke') {
-        this.bracketStage.karaoke = Math.min(this.bracketStage.karaoke + 1, 3);
-      } else if (this.activeView === 'lipsync') {
-        this.bracketStage.lipsync = Math.min(this.bracketStage.lipsync + 1, 3);
-      } else {
-        this.bracketStage.karaoke = Math.min(this.bracketStage.karaoke + 1, 3);
-        this.bracketStage.lipsync = Math.min(this.bracketStage.lipsync + 1, 3);
-      }
-      this.render();
-    };
   }
 }
 
