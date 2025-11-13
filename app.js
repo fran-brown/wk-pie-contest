@@ -1,17 +1,17 @@
 // ============================================
-// CONFIGURATION
+// WK HOLIDAY GIVING CAMPAIGN :D
 // ============================================
 const USE_MOCK_DATA = false; // Set to true for testing without API
 
 const CONFIG = {
-  // Your Givebutter API credentials
+  // Givebutter API info
   campaignId: '516562',
   
   // Fundraising goal
   goalAmount: 80000,
   refreshInterval: 15000, // 15 seconds
 
-  // Admin Controls
+  // Admin Controls (for testing)
   showAdminControls: false,
   
   // Brand colors
@@ -23,7 +23,6 @@ const CONFIG = {
   },
   
   // Tournament Brackets Configuration
-  // Map your Givebutter team names to bracket positions
   karaokeBracket: {
     // Round 1 (8 matches, 16 contestants)
     round1: [
@@ -36,7 +35,7 @@ const CONFIG = {
       { team1: 'Laura Wood', team2: 'Siobhan Robinson' },
       { team1: 'David Henriquez', team2: 'Felipe Riberio' },
     ],
-    // Round 2 (4 matches, 8 contestants) - Will be filled as you advance winners
+    // Round 2 (4 matches, 8 contestants)
     round2: [
       { team1: '', team2: '' },
       { team1: '', team2: '' },
@@ -75,12 +74,11 @@ const CONFIG = {
     ],
     finals: { team1: '', team2: '' },
   },
+  
   // Bios and images for participants
   // Note: key MUST exactly match the team name
-  // Manual bios and images for participants
-  // The key (e.g., "Caleb Jensen") MUST exactly match the team name.
   participantBios: {
-    // --- Karaoke Bracket ---
+    // Karaoke Bracket
     "Caleb Jensen": {
       bio: "",
       image: "images/Caleb Jensen.png"
@@ -146,7 +144,7 @@ const CONFIG = {
       image: "images/felipe ribeiro.png"
     },
 
-    // --- Lip Sync Bracket ---
+    // Lip Sync Bracket
     "MJ": {
       bio: "",
       image: "images/MJ.jpg"
@@ -274,10 +272,10 @@ class TournamentBracket {
       } 
       
       // ===================================
-      // START: NEW NETLIFY FETCH LOGIC
+      // START: NETLIFY FETCH LOGIC
       // ===================================
 
-      // This is the auto-generated path to your new Netlify function
+      // Path to Netlify function
       const proxiedUrl = '/.netlify/functions/givebutter'; 
       
       console.log('Fetching from Netlify proxy:', proxiedUrl);
@@ -294,7 +292,7 @@ class TournamentBracket {
 
       const proxyResponse = await teamsRes.json();
       
-      // Check if the proxy function itself returned an error
+      // Check if the proxy function returned an error
       if (proxyResponse.error) {
           throw new Error(`API Error via proxy: ${proxyResponse.error}`);
       }
@@ -307,22 +305,19 @@ class TournamentBracket {
       let total = 0;
       
       allTeams.forEach(team => {
-        // **THIS IS THE CRITICAL FIX**
-        // We map the API fields ('raised', 'supporters')
-        // to the fields your app expects ('total_donations', 'donor_count').
         const amount = team.raised || 0; 
         
         processedTeams[team.name] = {
           name: team.name,
-          total_donations: amount,              // Map 'raised' to 'total_donations'
-          donor_count: team.supporters || 0,  // Map 'supporters' to 'donor_count'
+          total_donations: amount,           // Map 'raised' to 'total_donations'
+          donor_count: team.supporters || 0, // Map 'supporters' to 'donor_count'
           url: team.url
         };
         total += amount;
       });
       
       // ===================================
-      // END: NEW NETLIFY FETCH LOGIC
+      // END: NETLIFY FETCH LOGIC
       // ===================================
         
       this.teamData = processedTeams;
@@ -549,8 +544,6 @@ class TournamentBracket {
   }
 
   // Renders the participants list view
-  // ===== UPDATED FUNCTION =====
-  // Renders the new "Participants" list view
   renderParticipantsList() {
     const allNames = this.getAllParticipantNames();
     
