@@ -59,7 +59,7 @@ const CONFIG = {
       { team1: 'Lindsay Varquez', team2: 'Galen Kary' },
       { team1: 'Paige Fitzmaurice', team2: 'Jacobi Mehringer' },
       { team1: 'Ada Jackson', team2: 'Will Curtis' },
-      { team1: 'Eloe Gill-Williams (Caldera)', team2: 'Lauren Hill' },
+      { team1: 'Eloe Gill-Williams', team2: 'Lauren Hill Vaughan' },
       { team1: 'Paris Fontes-Michel', team2: 'Maile Levy' },
       { team1: 'Jojo Ball', team2: 'Kacey Kelley' },
       { team1: 'Jovan Lim & Priya Moorthy', team2: 'Tasha Danner' },
@@ -129,7 +129,7 @@ class TournamentBracket {
     setInterval(() => this.fetchData(), CONFIG.refreshInterval);
   }
   
-  async fetchData() {
+async fetchData() {
     try {
       this.error = null;
       
@@ -140,15 +140,28 @@ class TournamentBracket {
         this.loading = false;
         this.lastUpdate = new Date();
         this.render();
-      } else {
-       
-        // Fetch teams from Givebutter via PHP proxy (handles Authorization header)
-        const proxiedUrl = './api-proxy.php?endpoint=teams';
-        console.log('Fetching from:', proxiedUrl);
-        const teamsRes = await fetch(proxiedUrl, {
+        return; // Exit function
+      } 
+      
+      // ===================================
+      // START: MODIFIED API FETCH LOGIC
+      // ===================================
+      
+      let allTeams = [];
+      let total = 0;
+      // Start with the first page of the API endpoint
+      let nextUrl = `https://api.givebutter.com/v1/campaigns/${CONFIG.campaignId}/teams`;
+
+      // Loop to handle pagination as long as a 'next' URL exists
+      while (nextUrl) {
+        console.log('Fetching from:', nextUrl);
+        
+        const teamsRes = await fetch(nextUrl, {
           method: 'GET',
           headers: {
-            'Accept': 'application/json'
+            'Accept': 'application/json',
+            // Add the Authorization header from your config
+            'Authorization': `Bearer ${CONFIG.apiKey}` 
           }
         });
 
@@ -156,52 +169,73 @@ class TournamentBracket {
           const errorText = await teamsRes.text();
           console.error('API Response Status:', teamsRes.status);
           console.error('API Response:', errorText);
-          throw new Error(`API error: ${teamsRes.status} - Check API key and campaign ID`);
-        }
-
-        const responseText = await teamsRes.text();
-        console.log('Raw API Response:', responseText);
-        
-        if (!responseText || responseText.trim() === '') {
-          throw new Error('API returned empty response');
+          
+          if (teamsRes.status === 401 || teamsRes.status === 403) {
+              throw new Error(`API Error ${teamsRes.status}: Invalid API Key or permissions. Check your key in CONFIG.`);
+          }
+          if (teamsRes.status === 404) {
+              throw new Error(`API Error ${teamsRes.status}: Campaign ID '${CONFIG.campaignId}' not found.`);
+          }
+          throw new Error(`API error: ${teamsRes.status} - Check API key and campaign ID.`);
         }
 
         let teamsData;
         try {
-          teamsData = JSON.parse(responseText);
+          teamsData = await teamsRes.json();
         } catch (parseErr) {
           console.error('JSON Parse Error:', parseErr);
+          const responseText = await teamsRes.text();
           console.error('Response text:', responseText.substring(0, 500));
           throw new Error(`Failed to parse API response: ${parseErr.message}`);
         }
 
-        console.log('Teams data received:', teamsData);
-        
-        // Process team data - key by team name
-        const processedTeams = {};
-        let total = 0;
-    
-         if (teamsData.data && Array.isArray(teamsData.data)) {
-          teamsData.data.forEach(team => {
-            processedTeams[team.name] = {
-              name: team.name,
-              total_donations: team.total_donations || 0,
-              donor_count: team.donor_count || 0,
-              url: team.url
-            };
-            total += team.total_donations || 0;
-          });
+        console.log('Page data received:', teamsData);
+
+        // Add the teams from this page's 'data' array to our master list
+        if (teamsData.data && Array.isArray(teamsData.data)) {
+          allTeams = allTeams.concat(teamsData.data);
         }
-        
-        this.teamData = processedTeams;
-        this.totalRaised = total;
-        this.loading = false;
-        this.lastUpdate = new Date();
-        this.render();
+
+        // Get the URL for the next page, if it exists
+        nextUrl = teamsData.links ? teamsData.links.next : null;
       }
+      
+      // Now that we have all teams from all pages, process them
+      console.log('All teams fetched:', allTeams);
+      const processedTeams = {};
+      
+      allTeams.forEach(team => {
+        // *** IMPORTANT FIX ***
+        // The API response uses 'raised' and 'supporters'
+        // Your code was looking for 'total_donations' and 'donor_count'
+        const amount = team.raised || 0; 
+        
+        processedTeams[team.name] = {
+          name: team.name,
+          total_donations: amount, // Use 'raised' from API
+          donor_count: team.supporters || 0, // Use 'supporters' from API
+          url: team.url
+        };
+        total += amount;
+      });
+      // ===================================
+      // END: MODIFIED API FETCH LOGIC
+      // ===================================
+        
+      this.teamData = processedTeams;
+      this.totalRaised = total;
+      this.loading = false;
+      this.lastUpdate = new Date();
+      this.render();
+
     } catch (err) {
       console.error('Error fetching data:', err);
-      this.error = err.message;
+      // This is where a CORS error will appear if Givebutter blocks the request
+      if (err.name === 'TypeError' && err.message.includes('Failed to fetch')) {
+        this.error = "CORS Error: The request to Givebutter was blocked by the browser. This means Givebutter's API does not allow direct browser calls. You may need to use a proxy server.";
+      } else {
+        this.error = err.message;
+      }
       this.loading = false;
       this.render();
     }
