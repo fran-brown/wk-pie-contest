@@ -415,20 +415,36 @@ class TournamentBracket {
       <div class="min-h-screen p-4 pb-24" style="background-color: ${CONFIG.colors.primary};">
         <!-- Header -->
         <div class="max-w-7xl mx-auto">
-          <div class="text-center py-8 mb-8 bg-white rounded-2xl shadow-lg">
-            <h1 class="text-6xl font-display mb-3" style="color: ${CONFIG.colors.primary};">
-              W+K Holiday Giving Campaign
-            </h1>
-            <p class="text-xl mb-4" style="color: #333;">Karaoke vs Lip Sync Championship</p>
+          <div class="py-8 px-6 md:px-12 mb-8 bg-white rounded-2xl shadow-lg">
             
-            <!-- Total Raised -->
-            <div class="inline-block px-8 py-4 rounded-full shadow-lg" style="background-color: ${CONFIG.colors.orange};">
-              <div class="text-sm text-white opacity-90">Total Raised</div>
-              <div class="text-4xl font-bold text-white">${this.formatCurrency(this.totalRaised)}</div>
-              <div class="text-sm text-white opacity-90">Goal: ${this.formatCurrency(CONFIG.goalAmount)}</div>
+            <div class="lg:flex lg:justify-between lg:items-center">
+              
+              <div class="text-center lg:text-left mb-6 lg:mb-0">
+                <h1 class="text-5xl md:text-6xl font-display" style="color: ${CONFIG.colors.primary};">
+                  W+K HOLIDAY GIVING CAMPAIGN
+                </h1>
+              </div>
+              
+              <div class="flex-shrink-0 flex justify-center lg:justify-end gap-6 md:gap-10">
+                
+                <div class="text-center lg:text-right">
+                  <div class="text-sm text-gray-500 uppercase tracking-wider">Total Raised</div>
+                  <div class="text-4xl md:text-5xl font-bold" style="color: ${CONFIG.colors.orange};">
+                    ${this.formatCurrency(this.totalRaised)}
+                  </div>
+                </div>
+                
+                <div class="text-center lg:text-right">
+                  <div class="text-sm text-gray-500 uppercase tracking-wider">Goal</div>
+                  <div class="text-4xl md:text-5xl font-bold" style="color: #333;">
+                    ${this.formatCurrency(CONFIG.goalAmount)}
+                  </div>
+                </div>
+
+              </div>
             </div>
             
-            <div class="mt-4 text-sm" style="color: #333;">
+            <div class="mt-6 text-sm text-center lg:text-left" style="color: #333;">
               <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
               </svg>
