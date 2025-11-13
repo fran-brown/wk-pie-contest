@@ -380,7 +380,7 @@ class TournamentBracket {
               ` : ''}
               </div>
             <div class="text-right">
-              <div class="font-bold" style="color: #333};">
+              <div class="font-bold" style="color: #333;">
                 ${this.formatCurrency(amount1)}
               </div>
               <div class="w-24 bg-gray-200 rounded-full h-2 mt-1">
@@ -408,7 +408,7 @@ class TournamentBracket {
               ` : ''}
               </div>
             <div class="text-right">
-              <div class="font-bold" style="color: ${isWinner2 ? CONFIG.colors.yellow : '#333'};">
+              <div class="font-bold" style="color: #333;">
                 ${this.formatCurrency(amount2)}
               </div>
               <div class="w-24 bg-gray-200 rounded-full h-2 mt-1">
