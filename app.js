@@ -16,7 +16,7 @@ const CONFIG = {
   
   // Brand colors
   colors: {
-    primary: '#72c8f1',,
+    primary: '#72c8f1',
     yellow: '#fff56d'
   },
   
