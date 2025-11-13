@@ -11,9 +11,8 @@ const CONFIG = {
   goalAmount: 80000,
   refreshInterval: 15000, // 15 seconds
 
-  // CORS Proxy (required for browser-based API calls)
-  corsProxy: 'https://api.allorigins.win/raw?url=',
-  apiProxyUrl: './api-proxy.php',
+  // Admin Controls
+  showAdminControls: false,
   
   // Brand colors
   colors: {
@@ -233,7 +232,6 @@ class TournamentBracket {
     
     return `
       <div class="bg-white rounded-lg shadow-md overflow-hidden mb-4" style="border: 3px solid ${isWinner1 || isWinner2 ? CONFIG.colors.yellow : '#e5e7eb'};">
-        <!-- Team 1 -->
         <div class="p-3 border-b relative" style="background-color: ${isWinner1 ? CONFIG.colors.yellow : 'white'}; border-bottom: 1px solid #e5e7eb;">
           ${isWinner1 ? '<div class="absolute left-2 top-2 text-2xl">👑</div>' : ''}
           <div class="flex items-center justify-between ${match.team1 ? '' : 'opacity-50'}">
@@ -242,7 +240,15 @@ class TournamentBracket {
                 ${match.team1 || 'TBD'}
               </div>
               <div class="text-xs" style="color: #666;">${team1Data.donor_count || 0} donors</div>
-            </div>
+              
+              ${team1Data.url ? `
+                <a href="${team1Data.url}" target="_blank" rel="noopener noreferrer" 
+                   class="inline-block text-xs text-white px-2 py-0.5 rounded mt-1 transition-all hover:opacity-80" 
+                   style="background-color: ${CONFIG.colors.primary};">
+                  Donate
+                </a>
+              ` : ''}
+              </div>
             <div class="text-right">
               <div class="font-bold" style="color: ${isWinner1 ? CONFIG.colors.orange : '#333'};">
                 ${this.formatCurrency(amount1)}
@@ -254,7 +260,6 @@ class TournamentBracket {
           </div>
         </div>
         
-        <!-- Team 2 -->
         <div class="p-3 relative" style="background-color: ${isWinner2 ? CONFIG.colors.yellow : 'white'};">
           ${isWinner2 ? '<div class="absolute left-2 top-2 text-2xl">👑</div>' : ''}
           <div class="flex items-center justify-between ${match.team2 ? '' : 'opacity-50'}">
@@ -263,7 +268,15 @@ class TournamentBracket {
                 ${match.team2 || 'TBD'}
               </div>
               <div class="text-xs" style="color: #666;">${team2Data.donor_count || 0} donors</div>
-            </div>
+
+              ${team2Data.url ? `
+                <a href="${team2Data.url}" target="_blank" rel="noopener noreferrer" 
+                   class="inline-block text-xs text-white px-2 py-0.5 rounded mt-1 transition-all hover:opacity-80" 
+                   style="background-color: ${CONFIG.colors.primary};">
+                  Donate
+                </a>
+              ` : ''}
+              </div>
             <div class="text-right">
               <div class="font-bold" style="color: ${isWinner2 ? CONFIG.colors.orange : '#333'};">
                 ${this.formatCurrency(amount2)}
@@ -450,7 +463,7 @@ class TournamentBracket {
         </div>
       </div>
       
-      ${this.renderAdminControls()}
+      ${CONFIG.showAdminControls ? this.renderAdminControls() : ''}
     `;
     
     this.attachEventListeners();
