@@ -59,7 +59,7 @@ const CONFIG = {
       { team1: 'Ada Jackson', team2: 'Will Curtis' },
       { team1: 'Eloe Gill-Williams', team2: 'Lauren Hill Vaughan' },
       { team1: 'Paris Fontes-Michel', team2: 'Maile Levy' },
-      { team1: 'Jojo Ball', team2: 'Kacey Kelley' },
+      { team1: 'Jojo Ball', team2: 'Ian Groom' },
       { team1: 'Jovan Lim & Priya Moorthy', team2: 'Tasha Danner' },
     ],
     round2: [
@@ -197,9 +197,9 @@ const CONFIG = {
       bio: "",
       image: "images/Jojo Ball.jpg"
     },
-    "Kacey Kelley": {
+    "Ian Groom": {
       bio: "",
-      image: "images/default.jpg"
+      image: "images/IanGroom.png"
     },
     "Jovan Lim & Priya Moorthy": {
       bio: "",
