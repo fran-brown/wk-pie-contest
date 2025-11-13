@@ -416,7 +416,7 @@ class TournamentBracket {
         <!-- Header -->
         <div class="max-w-7xl mx-auto">
           <div class="text-center py-8 mb-8 bg-white rounded-2xl shadow-lg">
-            <h1 class="text-6xl font-bold mb-3 font-display" style="color: ${CONFIG.colors.primary};">
+            <h1 class="text-6xl font-display mb-3" style="color: ${CONFIG.colors.primary};">
               W+K Holiday Giving Campaign
             </h1>
             <p class="text-xl mb-4" style="color: #333;">Karaoke vs Lip Sync Championship</p>
