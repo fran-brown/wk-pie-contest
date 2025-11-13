@@ -28,7 +28,7 @@ const CONFIG = {
       { team1: 'Ellie Jones', team2: 'Katie Schaller' },
       { team1: 'Mariah Mercier', team2: 'Nai Lucifora' },
       { team1: 'Jason Strickland', team2: 'Lloyd Winter' },
-      { team1: 'Becky Brinkerhoff', team2: 'Gelareh Dehnad' },
+      { team1: 'Melissa Dollar', team2: 'Gelareh Dehnad' },
       { team1: 'Jared Randle', team2: 'Fran Brown' },
       { team1: 'Laura Wood', team2: 'Siobhan Robinson' },
       { team1: 'David Henriquez', team2: 'Felipe Riberio' },
@@ -107,11 +107,11 @@ const CONFIG = {
     },
     "Lloyd Winter": {
       bio: "",
-      image: "images/default.jpg"
+      image: "images/Lloyd Winter.jpgg"
     },
-    "Becky Brinkerhoff": {
-      bio: "Hi. I'm Becky. I was trained in musical theater. This is my only outlet since selling out. ",
-      image: "images/Becky Brinkerhoff.jpeg"
+    "Melissa Dollar": {
+      bio: "",
+      image: "images/melissa dollar.jpg"
     },
     "Gelareh Dehnad": {
       bio: "Hello! My name is Gelareh (gelluhray) and I am 50% silly, 50% anxious! I have been described as a confetti cannon in a library! IYKYK. I love laughing, exclamation points, and donating to a good cause (wink, wink)! I hate snakes, celery, and restaurant waiting lists.",
@@ -165,7 +165,7 @@ const CONFIG = {
     },
     "Jacobi Mehringer": {
       bio: "",
-      image: "images/Jacobi.png"
+      image: "images/jacobi.jpg"
     },
     "Ada Jackson": {
       bio: "Super excited to live out my Zendaya, Channing Tatum, Tom Holland, LL Cool J dreams!!! I think I was born for something like this and need everyone to lock tf in and donate so that I can perform! Thank you and your welcome in advance! :)",
@@ -201,7 +201,7 @@ const CONFIG = {
     },
     "Jovan Lim & Priya Moorthy": {
       bio: "",
-      image: "images/default.jpg"
+      image: "images/Jovan_Priya.jpg"
     },
     "Tasha Danner": {
       bio: "I'm Tasha and I work at Caldera. I'm in Accounting, so I'll be able to count how generous you are being! Come support our amazing youth! ",
@@ -390,7 +390,7 @@ class TournamentBracket {
           </div>
         </div>
         
-        <div class="p-3 relative" style="background-color: ${isWinner2 ? CONFIG.colors.yellow : 'white'};">
+        <div class="p-3 relative" style="background-color: ${isWinner2 ? '#333' : 'white'};">
           ${isWinner2 ? '<div class="absolute left-2 top-2 text-2xl">👑</div>' : ''}
           <div class="flex items-center justify-between ${match.team2 ? '' : 'opacity-50'}">
             <div class="flex-1" style="padding-left: ${isWinner2 ? '32px' : '0'};">
@@ -408,7 +408,7 @@ class TournamentBracket {
               ` : ''}
               </div>
             <div class="text-right">
-              <div class="font-bold" style="color: ${isWinner2 ? CONFIG.colors.yellow : '#333'};">
+              <div class="font-bold" style="color: ${isWinner2 ? 'white' : '#333'};">
                 ${this.formatCurrency(amount2)}
               </div>
               <div class="w-24 bg-gray-200 rounded-full h-2 mt-1">
