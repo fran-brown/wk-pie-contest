@@ -7,14 +7,13 @@ const CONFIG = {
   // Your Givebutter API credentials
   apiKey: '8406|OC8orSbCvsMy6H4R8gFCfSKgkv7f2RiKeYUHSlmv',
   campaignId: '516562',
-
-  // Use proxy to avoid CORS issues
-  useProxy: true, // Set to false if you have your own backend
-  proxyUrl: 'https://corsproxy.io/?', // CORS proxy service
   
   // Fundraising goal
   goalAmount: 80000,
   refreshInterval: 15000, // 15 seconds
+
+  // CORS Proxy (required for browser-based API calls)
+  corsProxy: 'https://corsproxy.io/?',
   
   // Brand colors
   colors: {
@@ -142,38 +141,49 @@ class TournamentBracket {
         this.lastUpdate = new Date();
         this.render();
       } else {
-       // Fetch teams from Givebutter
-        const teamsRes = await fetch(
-          `https://api.givebutter.com/v1/teams?campaign=${CONFIG.campaignId}`,
-          { 
-            headers: { 
-              'Authorization': `Bearer ${CONFIG.apiKey}`,
-              'Accept': 'application/json'
-            } 
+       
+        // Fetch teams from Givebutter using CORS proxy
+
+        const givebutterUrl = `https://api.givebutter.com/v1/teams?campaign=${CONFIG.campaignId}`;
+
+        const proxiedUrl = `${CONFIG.corsProxy}${encodeURIComponent(givebutterUrl)}`;
+        console.log('Fetching from:', proxiedUrl);
+        const teamsRes = await fetch(proxiedUrl, {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${CONFIG.apiKey}`,
+            'Accept': 'application/json'
           }
-        );
-        
+        });
+
         if (!teamsRes.ok) {
           const errorText = await teamsRes.text();
+          console.error('API Response Status:', teamsRes.status);
           console.error('API Response:', errorText);
-          throw new Error(`API error: ${teamsRes.status} - ${errorText}`);
+          throw new Error(`API error: ${teamsRes.status} - Check API key and campaign ID`);
         }
+
         
+
         const teamsData = await teamsRes.json();
+
+        console.log('Teams data received:', teamsData);
         
         // Process team data - key by team name
         const processedTeams = {};
         let total = 0;
-        
-        teamsData.data.forEach(team => {
-          processedTeams[team.name] = {
-            name: team.name,
-            total_donations: team.total_donations || 0,
-            donor_count: team.donor_count || 0,
-            url: team.url
-          };
-          total += team.total_donations || 0;
-        });
+    
+         if (teamsData.data && Array.isArray(teamsData.data)) {
+          teamsData.data.forEach(team => {
+            processedTeams[team.name] = {
+              name: team.name,
+              total_donations: team.total_donations || 0,
+              donor_count: team.donor_count || 0,
+              url: team.url
+            };
+            total += team.total_donations || 0;
+          });
+        }
         
         this.teamData = processedTeams;
         this.totalRaised = total;
