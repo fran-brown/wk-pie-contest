@@ -224,7 +224,7 @@ class TournamentBracket {
     
     if (!match.team1 && !match.team2) {
       return `
-        <div class="bg-gray-100 rounded-lg p-4 mb-4 border-2 border-dashed border-gray-300">
+        <div class="bg-white rounded-lg p-4 mb-4 border-2 border-dashed border-gray-300">
           <div class="text-gray-400 text-center text-sm">TBD</div>
         </div>
       `;
@@ -308,10 +308,10 @@ class TournamentBracket {
           </div>
         </div>
         
-        <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+        <div class="grid grid-cols-1 gap-6">
           ${rounds.map((round, roundIndex) => `
             <div>
-              <h3 class="text-xl font-bold mb-4 text-center sticky top-0 py-2 z-10 rounded-lg" style="background-color: ${CONFIG.colors.primary}; color: white;">
+              <h3 class="text-2xl font-bold mb-4 text-center sticky top-0 py-3 z-10 bg-white" style="color: ${color}; border-bottom: 3px solid ${color};">
                 ${round.name}
               </h3>
               <div class="space-y-4">
@@ -454,20 +454,28 @@ class TournamentBracket {
           </div>
           
           <!-- View Toggle -->
-          <div class="flex justify-center gap-4 mb-8">
-            <button id="view-both" class="px-6 py-3 rounded-lg font-semibold transition-all" style="background-color: ${this.activeView === 'both' ? CONFIG.colors.orange : 'white'}; color: ${this.activeView === 'both' ? 'white' : '#333'}; ${this.activeView === 'both' ? 'box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); transform: scale(1.05);' : ''}">
-              Both Brackets
-            </button>
-            <button id="view-karaoke" class="px-6 py-3 rounded-lg font-semibold transition-all" style="background-color: ${this.activeView === 'karaoke' ? CONFIG.colors.pink : 'white'}; color: ${this.activeView === 'karaoke' ? 'white' : '#333'}; ${this.activeView === 'karaoke' ? 'box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); transform: scale(1.05);' : ''}">
-              Karaoke Only
-            </button>
-            <button id="view-lipsync" class="px-6 py-3 rounded-lg font-semibold transition-all" style="background-color: ${this.activeView === 'lipsync' ? CONFIG.colors.pink : 'white'}; color: ${this.activeView === 'lipsync' ? 'white' : '#333'}; ${this.activeView === 'lipsync' ? 'box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); transform: scale(1.05);' : ''}">
-              Lip Sync Only
-            </button>
+          <div class="flex justify-center mb-8">
+            <div class="inline-flex bg-white rounded-lg p-1 shadow-md">
+              <button id="view-both" class="px-5 py-2 rounded-md font-semibold transition-all text-sm" 
+                      style="background-color: ${this.activeView === 'both' ? CONFIG.colors.orange : 'transparent'}; 
+                             color: ${this.activeView === 'both' ? 'white' : '#333'};">
+                Both Brackets
+              </button>
+              <button id="view-karaoke" class="px-5 py-2 rounded-md font-semibold transition-all text-sm" 
+                      style="background-color: ${this.activeView === 'karaoke' ? CONFIG.colors.pink : 'transparent'}; 
+                             color: ${this.activeView === 'karaoke' ? 'white' : '#333'};">
+                Karaoke Only
+              </button>
+              <button id="view-lipsync" class="px-5 py-2 rounded-md font-semibold transition-all text-sm" 
+                      style="background-color: ${this.activeView === 'lipsync' ? CONFIG.colors.pink : 'transparent'}; 
+                             color: ${this.activeView === 'lipsync' ? 'white' : '#333'};">
+                Lip Sync Only
+              </button>
+            </div>
           </div>
           
           <!-- Brackets -->
-          <div class="max-w-[1600px] mx-auto">
+          <div class="max-w-[1600px] mx-auto lg:grid lg:grid-cols-2 lg:gap-8">
             ${this.activeView === 'both' || this.activeView === 'karaoke' 
               ? this.renderBracket(this.fillBracketToStage(CONFIG.karaokeBracket, this.bracketStage.karaoke), 'Karaoke Battle', CONFIG.colors.pink) 
               : ''}
