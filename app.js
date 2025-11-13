@@ -14,6 +14,7 @@ const CONFIG = {
 
   // CORS Proxy (required for browser-based API calls)
   corsProxy: 'https://api.allorigins.win/raw?url=',
+  apiProxyUrl: './api-proxy.php',
   
   // Brand colors
   colors: {
@@ -59,7 +60,7 @@ const CONFIG = {
       { team1: 'Lindsay Varquez', team2: 'Galen Kary' },
       { team1: 'Paige Fitzmaurice', team2: 'Jacobi Mehringer' },
       { team1: 'Ada Jackson', team2: 'Will Curtis' },
-      { team1: 'Eloe Gill-Williams (Caldera)', team2: 'Lauren Hill' },
+      { team1: 'Eloe Gill-Williams', team2: 'Lauren Hill Vaughan' },
       { team1: 'Paris Fontes-Michel', team2: 'Maile Levy' },
       { team1: 'Jojo Ball', team2: 'Kacey Kelley' },
       { team1: 'Jovan Lim & Priya Moorthy', team2: 'Tasha Danner' },
@@ -144,7 +145,7 @@ class TournamentBracket {
       } else {
        
         // Fetch teams from Givebutter via PHP proxy
-        const proxiedUrl = './api-proxy.php?endpoint=teams';
+        const proxiedUrl = `${CONFIG.apiProxyUrl}?endpoint=teams`;
         console.log('Fetching from:', proxiedUrl);
         const teamsRes = await fetch(proxiedUrl, {
           method: 'GET',
@@ -169,6 +170,10 @@ class TournamentBracket {
 
         let teamsData;
         try {
+          const trimmed = responseText.trim();
+          if (trimmed.startsWith('<?php') || trimmed.startsWith('<')) {
+            throw new Error('Proxy returned non-JSON. Ensure PHP is executed and use absolute apiProxyUrl when cross-domain.');
+          }
           teamsData = JSON.parse(responseText);
         } catch (parseErr) {
           console.error('JSON Parse Error:', parseErr);
