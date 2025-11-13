@@ -549,11 +549,13 @@ class TournamentBracket {
   }
 
   // Renders the participants list view
+  // ===== UPDATED FUNCTION =====
+  // Renders the new "Participants" list view
   renderParticipantsList() {
     const allNames = this.getAllParticipantNames();
     
     return `
-      <div classgrid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         ${allNames.map(name => {
           const teamData = this.teamData[name] || {};
           const bioData = CONFIG.participantBios[name] || {};
@@ -563,7 +565,8 @@ class TournamentBracket {
           
           return `
             <div class="bg-white rounded-lg shadow-lg overflow-hidden flex flex-col">
-              ${bioData.image ? `<img class="w-full h-48 object-cover" src="${bioData.image}" alt="${name}">` : '<div class="w-full h-48 bg-gray-200 flex items-center justify-center text-gray-400">No Image</div>'}
+              
+              ${bioData.image ? `<img class="w-full aspect-square object-cover" src="${bioData.image}" alt="${name}">` : '<div class="w-full aspect-square bg-gray-200 flex items-center justify-center text-gray-400">No Image</div>'}
               
               <div class="p-4 flex flex-col flex-grow">
                 <h3 class="text-2xl font-bold font-display mb-2" style="color: ${CONFIG.colors.primary};">${name}</h3>
@@ -632,7 +635,7 @@ class TournamentBracket {
                 </h1>
               </div>
               
-              <div class="flex-shrink-0 flex justify-center lg:justify-end gap-6 md:gap-10">
+              <div class="flex-shrink-0 flex flex-col justify-center lg:items-end gap-4">
                 
                 <div class="text-center lg:text-left">
                   <div class="text-sm text-gray-500 uppercase tracking-wider">Total Raised</div>
