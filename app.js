@@ -412,7 +412,7 @@ class TournamentBracket {
                 ${this.formatCurrency(amount2)}
               </div>
               <div class="w-24 bg-gray-200 rounded-full h-2 mt-1">
-                <div class="h-2 rounded-full transition-all duration-500" style="width: ${(amount2 / maxAmount) * 100}%; background-color: #333};"></div>
+                <div class="h-2 rounded-full transition-all duration-500" style="width: ${(amount2 / maxAmount) * 100}%; background-color: #333;"></div>
               </div>
             </div>
           </div>
