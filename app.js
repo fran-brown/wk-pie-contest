@@ -60,7 +60,7 @@ const CONFIG = {
       { team1: 'Lindsay Varquez', team2: 'Galen Kary' },
       { team1: 'Paige Fitzmaurice', team2: 'Jacobi Mehringer' },
       { team1: 'Ada Jackson', team2: 'Will Curtis' },
-      { team1: 'Eloe Gill-Williams', team2: 'Lauren Hill Vaughan' },
+      { team1: 'Eloe Gill-Williams (Caldera)', team2: 'Lauren Hill' },
       { team1: 'Paris Fontes-Michel', team2: 'Maile Levy' },
       { team1: 'Jojo Ball', team2: 'Kacey Kelley' },
       { team1: 'Jovan Lim & Priya Moorthy', team2: 'Tasha Danner' },
