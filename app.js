@@ -635,7 +635,7 @@ class TournamentBracket {
                 </h1>
               </div>
               
-              <div class="flex-shrink-0 flex flex-col justify-left lg:items-end gap-4 lg:ml-12">
+              <div class="flex-shrink-0 flex flex-col justify-center lg:items-start gap-4 lg:ml-12">
                 
                 <div class="text-center lg:text-left">
                   <div class="text-sm text-gray-500 uppercase tracking-wider">Total Raised</div>
