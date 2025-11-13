@@ -107,7 +107,7 @@ const CONFIG = {
     },
     "Lloyd Winter": {
       bio: "",
-      image: "images/Lloyd Winter.jpgg"
+      image: "images/Lloyd Winter.jpg"
     },
     "Melissa Dollar": {
       bio: "",
