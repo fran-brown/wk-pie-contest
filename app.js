@@ -627,15 +627,15 @@ class TournamentBracket {
         <div class="max-w-7xl mx-auto">
           <div class="py-8 px-6 md:px-12 mb-8 bg-white rounded-2xl shadow-lg">
             
-            <div class="lg:flex lg:justify-between lg:items-center">
+            <div class="lg:flex lg:items-center">
               
-              <div class="text-center lg:text-left mb-6 lg:mb-0">
+              <div class="text-center lg:text-left mb-6 lg:mb-0 lg:flex-grow">
                 <h1 class="text-5xl md:text-6xl font-display" style="color: ${CONFIG.colors.primary};">
                   W+K HOLIDAY GIVING CAMPAIGN
                 </h1>
               </div>
               
-              <div class="flex-shrink-0 flex flex-col justify-center lg:items-end gap-4">
+              <div class="flex-shrink-0 flex flex-col justify-left lg:items-end gap-4 lg:ml-12">
                 
                 <div class="text-center lg:text-left">
                   <div class="text-sm text-gray-500 uppercase tracking-wider">Total Raised</div>
