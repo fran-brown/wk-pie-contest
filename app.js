@@ -380,7 +380,7 @@ class TournamentBracket {
               ` : ''}
               </div>
             <div class="text-right">
-              <div class="font-bold" style="color: ${isWinner1 ? CONFIG.colors.yellow : '#333'};">
+              <div class="font-bold" style="color: #333};">
                 ${this.formatCurrency(amount1)}
               </div>
               <div class="w-24 bg-gray-200 rounded-full h-2 mt-1">
@@ -390,7 +390,7 @@ class TournamentBracket {
           </div>
         </div>
         
-        <div class="p-3 relative" style="background-color: ${isWinner2 ? '#333' : 'white'};">
+        <div class="p-3 relative" style="background-color: ${isWinner2 ? CONFIG.colors.yellow : 'white'};">
           ${isWinner2 ? '<div class="absolute left-2 top-2 text-2xl">👑</div>' : ''}
           <div class="flex items-center justify-between ${match.team2 ? '' : 'opacity-50'}">
             <div class="flex-1" style="padding-left: ${isWinner2 ? '32px' : '0'};">
@@ -408,7 +408,7 @@ class TournamentBracket {
               ` : ''}
               </div>
             <div class="text-right">
-              <div class="font-bold" style="color: ${isWinner2 ? 'white' : '#333'};">
+              <div class="font-bold" style="color: ${isWinner2 ? CONFIG.colors.yellow : '#333'};">
                 ${this.formatCurrency(amount2)}
               </div>
               <div class="w-24 bg-gray-200 rounded-full h-2 mt-1">
