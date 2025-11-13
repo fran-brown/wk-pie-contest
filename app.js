@@ -16,9 +16,7 @@ const CONFIG = {
   
   // Brand colors
   colors: {
-    primary: '#72c8f1',
-    orange: '#f15a22',
-    pink: '#f7b7d3',
+    primary: '#72c8f1',,
     yellow: '#fff56d'
   },
   
@@ -382,11 +380,11 @@ class TournamentBracket {
               ` : ''}
               </div>
             <div class="text-right">
-              <div class="font-bold" style="color: ${isWinner1 ? CONFIG.colors.orange : '#333'};">
+              <div class="font-bold" style="color: ${isWinner1 ? CONFIG.colors.yellow : '#333'};">
                 ${this.formatCurrency(amount1)}
               </div>
               <div class="w-24 bg-gray-200 rounded-full h-2 mt-1">
-                <div class="h-2 rounded-full transition-all duration-500" style="width: ${(amount1 / maxAmount) * 100}%; background-color: ${CONFIG.colors.orange};"></div>
+                <div class="h-2 rounded-full transition-all duration-500" style="width: ${(amount1 / maxAmount) * 100}%; background-color: #333"></div>
               </div>
             </div>
           </div>
@@ -410,11 +408,11 @@ class TournamentBracket {
               ` : ''}
               </div>
             <div class="text-right">
-              <div class="font-bold" style="color: ${isWinner2 ? CONFIG.colors.orange : '#333'};">
+              <div class="font-bold" style="color: ${isWinner2 ? CONFIG.colors.yellow : '#333'};">
                 ${this.formatCurrency(amount2)}
               </div>
               <div class="w-24 bg-gray-200 rounded-full h-2 mt-1">
-                <div class="h-2 rounded-full transition-all duration-500" style="width: ${(amount2 / maxAmount) * 100}%; background-color: ${CONFIG.colors.orange};"></div>
+                <div class="h-2 rounded-full transition-all duration-500" style="width: ${(amount2 / maxAmount) * 100}%; background-color: #333};"></div>
               </div>
             </div>
           </div>
@@ -570,7 +568,7 @@ class TournamentBracket {
                 
                 <div class="flex justify-between items-center mb-4 text-sm">
                   <div class="text-gray-700">
-                    <span class="font-bold text-lg" style="color: ${CONFIG.colors.orange};">${this.formatCurrency(raised)}</span> raised
+                    <span class="font-bold text-lg" style="color: #333;">${this.formatCurrency(raised)}</span> raised
                   </div>
                   <div class="text-gray-500">${donors} donors</div>
                 </div>
@@ -632,7 +630,7 @@ class TournamentBracket {
                 
                 <div class="text-center lg:text-left">
                   <div class="text-sm text-gray-500 uppercase tracking-wider">Total Raised</div>
-                  <div class="text-4xl md:text-5xl font-bold" style="color: ${CONFIG.colors.orange};">
+                  <div class="text-4xl md:text-5xl font-bold" style="color: #333};">
                     ${this.formatCurrency(this.totalRaised)}
                   </div>
                 </div>
@@ -652,7 +650,7 @@ class TournamentBracket {
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
               </svg>
               Last updated: ${this.lastUpdate.toLocaleTimeString()}
-              ${USE_MOCK_DATA ? `<span class="font-semibold" style="color: ${CONFIG.colors.orange};">🧪 MOCK DATA</span>` : ''}
+              ${USE_MOCK_DATA ? `<span class="font-semibold" style="color: #333;">🧪 MOCK DATA</span>` : ''}
             </div>
           </div>
           
@@ -660,12 +658,12 @@ class TournamentBracket {
           <div class="flex justify-center mb-8">
             <div class="inline-flex bg-white rounded-lg p-1 shadow-md">
               <button id="view-bracket" class="px-6 py-2 rounded-md font-semibold transition-all text-sm" 
-                      style="background-color: ${this.activeView === 'bracket' ? CONFIG.colors.orange : 'transparent'}; 
+                      style="background-color: ${this.activeView === 'bracket' ? '#333' : 'transparent'}; 
                              color: ${this.activeView === 'bracket' ? 'white' : '#333'};">
                 Bracket View
               </button>
               <button id="view-participants" class="px-6 py-2 rounded-md font-semibold transition-all text-sm" 
-                      style="background-color: ${this.activeView === 'participants' ? CONFIG.colors.pink : 'transparent'}; 
+                      style="background-color: ${this.activeView === 'participants' ? '#333' : 'transparent'}; 
                              color: ${this.activeView === 'participants' ? 'white' : '#333'};">
                 Participants
               </button>
@@ -676,8 +674,8 @@ class TournamentBracket {
           <div class="max-w-[1600px] mx-auto">
             ${this.activeView === 'bracket' ? `
               <div class="lg:grid lg:grid-cols-2 lg:gap-8">
-                ${this.renderBracket(this.fillBracketToStage(CONFIG.karaokeBracket, this.bracketStage.karaoke), 'Karaoke Battle', CONFIG.colors.pink)}
-                ${this.renderBracket(this.fillBracketToStage(CONFIG.lipSyncBracket, this.bracketStage.lipsync), 'Lip Sync Battle', CONFIG.colors.pink)}
+                ${this.renderBracket(this.fillBracketToStage(CONFIG.karaokeBracket, this.bracketStage.karaoke), 'Karaoke Battle', '#333')}
+                ${this.renderBracket(this.fillBracketToStage(CONFIG.lipSyncBracket, this.bracketStage.lipsync), 'Lip Sync Battle', '#333')}
               </div>
             ` : `
               ${this.renderParticipantsList()}
@@ -729,7 +727,7 @@ class TournamentBracket {
         </div>
         
         ${USE_MOCK_DATA ? `
-          <div class="mt-3 p-2 rounded text-xs text-white" style="background-color: ${CONFIG.colors.orange};">
+          <div class="mt-3 p-2 rounded text-xs text-white" style="background-color: #333;">
             <strong>⚠️ Mock Mode</strong><br>
             Set USE_MOCK_DATA = false
           </div>
