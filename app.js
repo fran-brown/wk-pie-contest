@@ -427,14 +427,14 @@ class TournamentBracket {
               
               <div class="flex-shrink-0 flex justify-center lg:justify-end gap-6 md:gap-10">
                 
-                <div class="text-center lg:text-right">
+                <div class="text-center lg:text-left">
                   <div class="text-sm text-gray-500 uppercase tracking-wider">Total Raised</div>
                   <div class="text-4xl md:text-5xl font-bold" style="color: ${CONFIG.colors.orange};">
                     ${this.formatCurrency(this.totalRaised)}
                   </div>
                 </div>
                 
-                <div class="text-center lg:text-right">
+                <div class="text-center lg:text-left">
                   <div class="text-sm text-gray-500 uppercase tracking-wider">Goal</div>
                   <div class="text-4xl md:text-5xl font-bold" style="color: #333;">
                     ${this.formatCurrency(CONFIG.goalAmount)}
