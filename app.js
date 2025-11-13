@@ -59,7 +59,7 @@ const CONFIG = {
       { team1: 'Lindsay Varquez', team2: 'Galen Kary' },
       { team1: 'Paige Fitzmaurice', team2: 'Jacobi Mehringer' },
       { team1: 'Ada Jackson', team2: 'Will Curtis' },
-      { team1: 'Eloe Gill-Williams', team2: 'Lauren Hill Vaughan' },
+      { team1: 'Eloe Gill-Williams (Caldera)', team2: 'Lauren Hill' },
       { team1: 'Paris Fontes-Michel', team2: 'Maile Levy' },
       { team1: 'Jojo Ball', team2: 'Kacey Kelley' },
       { team1: 'Jovan Lim & Priya Moorthy', team2: 'Tasha Danner' },
@@ -81,7 +81,7 @@ const CONFIG = {
 // Mock data generator for testing
 const generateMockData = () => {
   const allTeamNames = [
-    'JCM Noah', 'Becky Brinkerhoff', 'Caleb Jensen', 'David Henriquez',
+    'Ada Jackson', 'Becky Brinkerhoff', 'Caleb Jensen', 'David Henriquez',
     'Ellie Jones', 'Eloe Gill-Williams', 'Felipe Riberio', 'Fran Brown',
     'Galen Kary', 'Gelareh Dehnad', 'Jacobi Mehringer', 'Jane Monaghan',
     'Jared Randle', 'Jason Strickland', 'Jojo Ball', 'Jovan Lim & Priya Moorthy',
@@ -119,6 +119,7 @@ class TournamentBracket {
     this.error = null;
     this.lastUpdate = new Date();
     this.activeView = 'both'; // 'both', 'karaoke', 'lipsync'
+    this.bracketStage = { karaoke: 0, lipsync: 0 };
     
     this.init();
   }
@@ -129,7 +130,7 @@ class TournamentBracket {
     setInterval(() => this.fetchData(), CONFIG.refreshInterval);
   }
   
-async fetchData() {
+  async fetchData() {
     try {
       this.error = null;
       
@@ -140,28 +141,15 @@ async fetchData() {
         this.loading = false;
         this.lastUpdate = new Date();
         this.render();
-        return; // Exit function
-      } 
-      
-      // ===================================
-      // START: MODIFIED API FETCH LOGIC
-      // ===================================
-      
-      let allTeams = [];
-      let total = 0;
-      // Start with the first page of the API endpoint
-      let nextUrl = `https://api.givebutter.com/v1/campaigns/${CONFIG.campaignId}/teams`;
-
-      // Loop to handle pagination as long as a 'next' URL exists
-      while (nextUrl) {
-        console.log('Fetching from:', nextUrl);
-        
-        const teamsRes = await fetch(nextUrl, {
+      } else {
+       
+        // Fetch teams from Givebutter via PHP proxy
+        const proxiedUrl = './api-proxy.php?endpoint=teams';
+        console.log('Fetching from:', proxiedUrl);
+        const teamsRes = await fetch(proxiedUrl, {
           method: 'GET',
           headers: {
-            'Accept': 'application/json',
-            // Add the Authorization header from your config
-            'Authorization': `Bearer ${CONFIG.apiKey}` 
+            'Accept': 'application/json'
           }
         });
 
@@ -169,73 +157,52 @@ async fetchData() {
           const errorText = await teamsRes.text();
           console.error('API Response Status:', teamsRes.status);
           console.error('API Response:', errorText);
-          
-          if (teamsRes.status === 401 || teamsRes.status === 403) {
-              throw new Error(`API Error ${teamsRes.status}: Invalid API Key or permissions. Check your key in CONFIG.`);
-          }
-          if (teamsRes.status === 404) {
-              throw new Error(`API Error ${teamsRes.status}: Campaign ID '${CONFIG.campaignId}' not found.`);
-          }
-          throw new Error(`API error: ${teamsRes.status} - Check API key and campaign ID.`);
+          throw new Error(`API error: ${teamsRes.status} - Check API key and campaign ID`);
+        }
+
+        const responseText = await teamsRes.text();
+        console.log('Raw API Response:', responseText);
+        
+        if (!responseText || responseText.trim() === '') {
+          throw new Error('API returned empty response');
         }
 
         let teamsData;
         try {
-          teamsData = await teamsRes.json();
+          teamsData = JSON.parse(responseText);
         } catch (parseErr) {
           console.error('JSON Parse Error:', parseErr);
-          const responseText = await teamsRes.text();
           console.error('Response text:', responseText.substring(0, 500));
           throw new Error(`Failed to parse API response: ${parseErr.message}`);
         }
 
-        console.log('Page data received:', teamsData);
-
-        // Add the teams from this page's 'data' array to our master list
-        if (teamsData.data && Array.isArray(teamsData.data)) {
-          allTeams = allTeams.concat(teamsData.data);
+        console.log('Teams data received:', teamsData);
+        
+        // Process team data - key by team name
+        const processedTeams = {};
+        let total = 0;
+    
+         if (teamsData.data && Array.isArray(teamsData.data)) {
+          teamsData.data.forEach(team => {
+            processedTeams[team.name] = {
+              name: team.name,
+              total_donations: team.total_donations || 0,
+              donor_count: team.donor_count || 0,
+              url: team.url
+            };
+            total += team.total_donations || 0;
+          });
         }
-
-        // Get the URL for the next page, if it exists
-        nextUrl = teamsData.links ? teamsData.links.next : null;
+        
+        this.teamData = processedTeams;
+        this.totalRaised = total;
+        this.loading = false;
+        this.lastUpdate = new Date();
+        this.render();
       }
-      
-      // Now that we have all teams from all pages, process them
-      console.log('All teams fetched:', allTeams);
-      const processedTeams = {};
-      
-      allTeams.forEach(team => {
-        // *** IMPORTANT FIX ***
-        // The API response uses 'raised' and 'supporters'
-        // Your code was looking for 'total_donations' and 'donor_count'
-        const amount = team.raised || 0; 
-        
-        processedTeams[team.name] = {
-          name: team.name,
-          total_donations: amount, // Use 'raised' from API
-          donor_count: team.supporters || 0, // Use 'supporters' from API
-          url: team.url
-        };
-        total += amount;
-      });
-      // ===================================
-      // END: MODIFIED API FETCH LOGIC
-      // ===================================
-        
-      this.teamData = processedTeams;
-      this.totalRaised = total;
-      this.loading = false;
-      this.lastUpdate = new Date();
-      this.render();
-
     } catch (err) {
       console.error('Error fetching data:', err);
-      // This is where a CORS error will appear if Givebutter blocks the request
-      if (err.name === 'TypeError' && err.message.includes('Failed to fetch')) {
-        this.error = "CORS Error: The request to Givebutter was blocked by the browser. This means Givebutter's API does not allow direct browser calls. You may need to use a proxy server.";
-      } else {
-        this.error = err.message;
-      }
+      this.error = err.message;
       this.loading = false;
       this.render();
     }
@@ -351,6 +318,71 @@ async fetchData() {
     `;
   }
   
+  getAmountByName(name) {
+    if (!name) return 0;
+    const t = this.teamData[name];
+    return t && typeof t.total_donations === 'number' ? t.total_donations : 0;
+  }
+  
+  computeWinners(matches) {
+    const winners = [];
+    for (let i = 0; i < matches.length; i++) {
+      const m = matches[i];
+      const n1 = m.team1 || '';
+      const n2 = m.team2 || '';
+      const a1 = this.getAmountByName(n1);
+      const a2 = this.getAmountByName(n2);
+      let w = '';
+      if (n1 && !n2) w = n1;
+      else if (!n1 && n2) w = n2;
+      else if (!n1 && !n2) w = '';
+      else if (a1 > a2) w = n1;
+      else if (a2 > a1) w = n2;
+      else w = n1;
+      winners.push(w);
+    }
+    return winners;
+  }
+  
+  pairIntoMatches(names) {
+    const matches = [];
+    for (let i = 0; i < names.length; i += 2) {
+      matches.push({ team1: names[i] || '', team2: names[i + 1] || '' });
+    }
+    return matches;
+  }
+  
+  fillBracket(baseBracket) {
+    const round1 = baseBracket.round1.slice();
+    const r2Winners = this.computeWinners(round1);
+    const round2 = this.pairIntoMatches(r2Winners);
+    const r3Winners = this.computeWinners(round2);
+    const round3 = this.pairIntoMatches(r3Winners);
+    const finalWinners = this.computeWinners(round3);
+    const finals = { team1: finalWinners[0] || '', team2: finalWinners[1] || '' };
+    return { round1, round2, round3, finals };
+  }
+
+  fillBracketToStage(baseBracket, stage) {
+    const round1 = baseBracket.round1.slice();
+    let round2 = baseBracket.round2.slice();
+    let round3 = baseBracket.round3.slice();
+    let finals = { ...baseBracket.finals };
+    if (stage >= 1) {
+      const r2Winners = this.computeWinners(round1);
+      round2 = this.pairIntoMatches(r2Winners);
+    }
+    if (stage >= 2) {
+      const r3Winners = this.computeWinners(round2);
+      round3 = this.pairIntoMatches(r3Winners);
+    }
+    if (stage >= 3) {
+      const finalWinners = this.computeWinners(round3);
+      finals = { team1: finalWinners[0] || '', team2: finalWinners[1] || '' };
+    }
+    return { round1, round2, round3, finals };
+  }
+  
   render() {
     const root = document.getElementById('root');
     
@@ -408,16 +440,19 @@ async fetchData() {
             <button id="view-lipsync" class="px-6 py-3 rounded-lg font-semibold transition-all" style="background-color: ${this.activeView === 'lipsync' ? CONFIG.colors.orange : 'white'}; color: ${this.activeView === 'lipsync' ? 'white' : '#333'}; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; ${this.activeView === 'lipsync' ? 'box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); transform: scale(1.05);' : ''}">
               Lip Sync Only
             </button>
+            <button id="advance-bracket" class="px-6 py-3 rounded-lg font-semibold transition-all" style="background-color: ${CONFIG.colors.yellow}; color: #333; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;">
+              Advance Bracket
+            </button>
           </div>
           
           <!-- Brackets -->
           <div class="max-w-[1600px] mx-auto">
             ${this.activeView === 'both' || this.activeView === 'karaoke' 
-              ? this.renderBracket(CONFIG.karaokeBracket, '🎤 Karaoke Battle', CONFIG.colors.pink) 
+              ? this.renderBracket(this.fillBracketToStage(CONFIG.karaokeBracket, this.bracketStage.karaoke), '🎤 Karaoke Battle', CONFIG.colors.pink) 
               : ''}
             
             ${this.activeView === 'both' || this.activeView === 'lipsync' 
-              ? this.renderBracket(CONFIG.lipSyncBracket, '💋 Lip Sync Battle', CONFIG.colors.orange) 
+              ? this.renderBracket(this.fillBracketToStage(CONFIG.lipSyncBracket, this.bracketStage.lipsync), '💋 Lip Sync Battle', CONFIG.colors.orange) 
               : ''}
           </div>
         </div>
@@ -484,10 +519,22 @@ async fetchData() {
     const viewBoth = document.getElementById('view-both');
     const viewKaraoke = document.getElementById('view-karaoke');
     const viewLipsync = document.getElementById('view-lipsync');
+    const advanceBtn = document.getElementById('advance-bracket');
     
     if (viewBoth) viewBoth.onclick = () => { this.activeView = 'both'; this.render(); };
     if (viewKaraoke) viewKaraoke.onclick = () => { this.activeView = 'karaoke'; this.render(); };
     if (viewLipsync) viewLipsync.onclick = () => { this.activeView = 'lipsync'; this.render(); };
+    if (advanceBtn) advanceBtn.onclick = () => {
+      if (this.activeView === 'karaoke') {
+        this.bracketStage.karaoke = Math.min(this.bracketStage.karaoke + 1, 3);
+      } else if (this.activeView === 'lipsync') {
+        this.bracketStage.lipsync = Math.min(this.bracketStage.lipsync + 1, 3);
+      } else {
+        this.bracketStage.karaoke = Math.min(this.bracketStage.karaoke + 1, 3);
+        this.bracketStage.lipsync = Math.min(this.bracketStage.lipsync + 1, 3);
+      }
+      this.render();
+    };
   }
 }
 
