@@ -81,14 +81,7 @@ const CONFIG = {
 // Mock data generator for testing
 const generateMockData = () => {
   const allTeamNames = [
-    'JCM Noah', 'Peter Gay', 'Franny Pack', 'David Henriquez',
-    'Ellie Jones', 'Eloe Gill-Williams', 'Felipe Riberio', 'Fran Brown',
-    'Galen Kary', 'Gelareh Dehnad', 'Jacobi Mehringer', 'Jane Monaghan',
-    'Jared Randle', 'Jason Strickland', 'Jojo Ball', 'Jovan Lim & Priya Moorthy',
-    'Kacey Kelley', 'Laura Wood', 'Lauren Hill Vaughan', 'Lindsay Varquez',
-    'Maisie Plew', 'Mariah Mercier', 'MJ', 'Molly Dyson',
-    'Nai Lucifora', 'Paige Fitzmaurice', 'Paris Fontes-Michel', 
-    'Siobhan Robinson', 'Will Curtis'
+    'JCM Noah'
   ];
   
   const teamData = {};
