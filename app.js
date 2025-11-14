@@ -145,7 +145,7 @@ const CONFIG = {
     // Lip Sync Bracket
     "MJ": {
       bio: "",
-      image: "images/MJ.jpg"
+      image: "images/mj-karaoke.jpg"
     },
     "Maisie Plew": {
       bio: "Help me embarrass myself for ✨charity✨",
