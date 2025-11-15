@@ -736,6 +736,7 @@ class TournamentBracket {
     `;
     
     this.attachEventListeners();
+    this.updateCountdowns();
   }
   
   renderError() {
