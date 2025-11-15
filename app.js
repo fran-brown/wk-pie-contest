@@ -11,6 +11,9 @@ const CONFIG = {
   goalAmount: 80000,
   refreshInterval: 15000, // 15 seconds
 
+  // Deadline with Year/Month/Time
+  deadline: '2025-11-19T00:00:00', 
+
   // Admin Controls (for testing)
   showAdminControls: false,
   
@@ -207,7 +210,7 @@ const CONFIG = {
       bio: "I'm Tasha and I work at Caldera. I'm in Accounting, so I'll be able to count how generous you are being! Come support our amazing youth! ",
       image: "images/Tasha Danner - Tasha Danner.jpg"
     }
-  }
+  },
 };
 
 // Mock data generator for testing
@@ -252,6 +255,7 @@ class TournamentBracket {
   init() {
     this.render();
     this.fetchData();
+    this.startCountdownInterval();
     setInterval(() => this.fetchData(), CONFIG.refreshInterval);
   }
   
@@ -444,6 +448,11 @@ class TournamentBracket {
               <h3 class="text-2xl font-bold mb-4 text-center sticky top-0 py-3 z-10 bg-white" style="color: ${color}; border-bottom: 3px solid ${color};">
                 ${round.name}
               </h3>
+              ${round.name === 'Round 1' ? `
+              <div class="text-center text-lg text-gray-700 mb-4 p-3 rounded-lg" style="background-color: #fff56d; border: 2px solid #e6cb00;">
+                <span class="countdown-timer">Loading countdown...</span>
+              </div>
+            ` : ''}
               <div class="space-y-4">
                 ${round.matches.map((match, matchIndex) => 
                   this.renderMatchup(match, matchIndex, round.name)
@@ -590,6 +599,45 @@ class TournamentBracket {
         }).join('')}
       </div>
     `;
+  }
+
+  // Calculates time b4 deadline
+  calculateTimeLeft() {
+    const target = new Date(CONFIG.deadline).getTime();
+    const now = new Date().getTime();
+    const diff = target - now;
+    
+    if (diff <= 0) {
+      return { ended: true, days: 0, hours: 0 };
+    }
+    
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    return { ended: false, days, hours };
+  }
+
+  // Updates timer text
+  updateCountdowns() {
+    const { ended, days, hours } = this.calculateTimeLeft();
+    let html = '';
+    
+    if (ended) {
+      html = '<strong>Voting has ended!</strong>';
+    } else {
+      html = `<strong>${days}</strong> days, <strong>${hours}</strong> hours left to vote!`;
+    }
+    
+    const timers = document.querySelectorAll('.countdown-timer');
+    timers.forEach(timer => {
+      timer.innerHTML = html;
+    });
+  }
+
+  // Timer update interval
+  startCountdownInterval() {
+    this.updateCountdowns(); 
+    // Update every minute
+    setInterval(() => this.updateCountdowns(), 60000); 
   }
   
   render() {
