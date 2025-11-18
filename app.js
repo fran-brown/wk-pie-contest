@@ -731,10 +731,10 @@ class TournamentBracket {
               </div>
             </div>
             
-            <div class="mt-6 text-center lg:text-left">
+            <div class="mt-2 text-center lg:text-left">
               <div class="inline-block px-6 py-3 mb-3 shadow-sm" style="background-color: ${CONFIG.colors.yellow};">
                 <div class="text-xs font-bold uppercase tracking-wider mb-1 text-gray-800">Voting Ends Nov 18 at 10pm PST</div>
-                <span class="countdown-timer text-2xl font-bold text-gray-800">Loading...</span>
+                <span class="countdown-timer text-xl font-bold text-gray-800">Loading...</span>
               </div>
               
               <p class="text-xs text-gray-500 max-w-md mx-auto lg:mx-0 leading-relaxed">
