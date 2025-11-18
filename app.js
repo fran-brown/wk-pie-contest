@@ -662,7 +662,7 @@ class TournamentBracket {
     if (ended) {
       html = '<strong>Voting has ended!</strong>';
     } else {
-      html = `<strong>${days}</strong> days, <strong>${hours}</strong> hours left to vote!`;
+      html = `${days} days, ${hours} hours left to vote!`;
     }
     
     const timers = document.querySelectorAll('.countdown-timer');
@@ -733,7 +733,7 @@ class TournamentBracket {
             
             <div class="mt-6 text-center lg:text-left">
               <div class="inline-block px-6 py-3 mb-3 shadow-sm" style="background-color: ${CONFIG.colors.yellow};">
-                <div class="text-xs font-bold uppercase tracking-wider mb-1 text-yellow-800">Voting Ends Nov 18 at 10pm PST</div>
+                <div class="text-xs font-bold uppercase tracking-wider mb-1 text-gray-800">Voting Ends Nov 18 at 10pm PST</div>
                 <span class="countdown-timer text-2xl font-bold text-gray-800">Loading...</span>
               </div>
               
