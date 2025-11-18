@@ -12,7 +12,7 @@ const CONFIG = {
   refreshInterval: 15000, // 15 seconds
 
   // Deadline with Year/Month/Time
-  deadline: '2025-11-19T00:00:00', 
+  deadline: '2025-11-18T22:00:00', 
 
   // Admin Controls (for testing)
   showAdminControls: false,
