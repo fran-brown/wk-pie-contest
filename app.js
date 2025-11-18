@@ -17,6 +17,43 @@ const CONFIG = {
   // Admin Controls (for testing)
   showAdminControls: false,
   
+  // Total amounts raised on round 1 -- CHANGE PER ROUND --
+  round1Results: {
+    // Karaoke Group
+    "Caleb Jensen": 1, 
+    "Jane Monaghan": 10,
+    "Ellie Jones": 99,
+    "Katie Schaller": 5,
+    "Mariah Mercier": 60,
+    "Nai Lucifora": 15,
+    "Jason Strickland": 171,
+    "Lloyd Winter": 1,
+    "Melissa Dollar": 19,
+    "Gelareh Dehnad": 143,
+    "Jared Randle": 42,
+    "Fran Brown": 41,
+    "Laura Wood": 1,
+    "Siobhan Robinson": 20,
+    "David Henriquez": 11,
+    "Felipe Riberio": 1,
+    // Lip Sync Group
+    "MJ": 21,
+    "Maisie Plew": 40,
+    "Lindsay Varquez": 0,
+    "Galen Kary": 10,
+    "Paige Fitzmaurice": 69,
+    "Jacobi Mehringer": 0,
+    "Ada Jackson": 25,
+    "Will Curtis": 1,
+    "Eloe Gill-Williams": 0,
+    "Lauren Hill Vaughan": 0,
+    "Paris Fontes-Michel": 30,
+    "Maile Levy": 10,
+    "Jojo Ball": 20,
+    "Jovan Lim & Priya Moorthy": 1,
+    "Tasha Danner": 0
+  },
+
   // Brand colors
   colors: {
     primary: '#72c8f1',
@@ -270,16 +307,11 @@ class TournamentBracket {
         this.loading = false;
         this.lastUpdate = new Date();
         this.render();
-        return; // Exit function
+        return;
       } 
       
-      // ===================================
-      // START: NETLIFY FETCH LOGIC
-      // ===================================
-
-      // Path to Netlify function
+      // Fetch from Netlify Proxy
       const proxiedUrl = '/.netlify/functions/givebutter'; 
-      
       console.log('Fetching from Netlify proxy:', proxiedUrl);
       
       const teamsRes = await fetch(proxiedUrl, {
@@ -293,37 +325,49 @@ class TournamentBracket {
       }
 
       const proxyResponse = await teamsRes.json();
-      
-      // Check if the proxy function returned an error
       if (proxyResponse.error) {
           throw new Error(`API Error via proxy: ${proxyResponse.error}`);
       }
       
-      // The proxy returns { data: [...] }
       const allTeams = proxyResponse.data;
-      console.log('All teams fetched via proxy:', allTeams);
       
+      // COMBINE ROUND 1 STATIC DATA + ROUND 2 LIVE DATA
       const processedTeams = {};
-      let total = 0;
       
-      allTeams.forEach(team => {
-        const amount = team.raised || 0; 
-        
-        processedTeams[team.name] = {
-          name: team.name,
-          total_donations: amount,           // Map 'raised' to 'total_donations'
-          donor_count: team.supporters || 0, // Map 'supporters' to 'donor_count'
-          url: team.url
+
+      let grandTotal = Object.values(CONFIG.round1Results).reduce((sum, val) => sum + val, 0);
+
+      for (const [name, r1Amount] of Object.entries(CONFIG.round1Results)) {
+        processedTeams[name] = {
+          name: name,
+          total_donations: r1Amount,
+          donor_count: 0,
+          url: null                  // eliminated players have no link
         };
-        total += amount;
+      }
+
+      allTeams.forEach(team => {
+        let cleanName = team.name;
+        
+        if (CONFIG.roundSuffix && team.name.endsWith(CONFIG.roundSuffix)) {
+          cleanName = team.name.substring(0, team.name.length - CONFIG.roundSuffix.length);
+        }
+
+        if (processedTeams[cleanName]) {
+          const newMoney = team.raised || 0;
+          
+          processedTeams[cleanName].total_donations += newMoney;
+          
+          processedTeams[cleanName].donor_count += (team.supporters || 0);
+          
+          processedTeams[cleanName].url = team.url;
+
+          grandTotal += newMoney;
+        }
       });
       
-      // ===================================
-      // END: NETLIFY FETCH LOGIC
-      // ===================================
-        
       this.teamData = processedTeams;
-      this.totalRaised = total;
+      this.totalRaised = grandTotal;
       this.loading = false;
       this.lastUpdate = new Date();
       this.render();
@@ -426,9 +470,10 @@ class TournamentBracket {
   }
   
   renderBracket(bracket, title, color) {
+    // Moved quarter finals first -- CHANGE PER NEW ROUND --
     const rounds = [
-      { name: 'Round 1', matches: bracket.round1 },
       { name: 'Quarter Finals', matches: bracket.round2 },
+      { name: 'Round 1', matches: bracket.round1 },
       { name: 'Semi Finals', matches: bracket.round3 },
       { name: 'Finals', matches: [bracket.finals] }
     ];
@@ -437,9 +482,6 @@ class TournamentBracket {
       <div class="mb-12">
         <div class="text-center mb-6">
           <h2 class="text-5xl font-bold mb-3" style="color: ${color};">${title}</h2>
-          <div class="inline-block text-white px-6 py-2 rounded-full" style="background-color: ${color};">
-            <span class="text-lg font-semibold">16 Contestants</span>
-          </div>
         </div>
         
         <div class="grid grid-cols-1 gap-6">
@@ -448,11 +490,7 @@ class TournamentBracket {
               <h3 class="text-2xl font-bold mb-4 text-center sticky top-0 py-3 z-10 bg-white" style="color: ${color}; border-bottom: 3px solid ${color};">
                 ${round.name}
               </h3>
-              ${round.name === 'Round 1' ? `
-              <div class="text-center text-lg text-gray-700 mb-4 p-3 rounded-lg" style="background-color: #fff56d; border: 2px solid #e6cb00;">
-                <span class="countdown-timer">Loading countdown...</span>
-              </div>
-            ` : ''}
+              
               <div class="space-y-4">
                 ${round.matches.map((match, matchIndex) => 
                   this.renderMatchup(match, matchIndex, round.name)
@@ -693,12 +731,15 @@ class TournamentBracket {
               </div>
             </div>
             
-            <div class="mt-6 text-sm text-center lg:text-left" style="color: #333;">
-              <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-              </svg>
-              Last updated: ${this.lastUpdate.toLocaleTimeString()}
-              ${USE_MOCK_DATA ? `<span class="font-semibold" style="color: #333;">🧪 MOCK DATA</span>` : ''}
+            <div class="mt-6 text-center lg:text-left">
+              <div class="inline-block px-6 py-3 rounded-lg mb-3 shadow-sm" style="background-color: ${CONFIG.colors.yellow}; border: 2px solid #e6cb00;">
+                <div class="text-xs font-bold uppercase tracking-wider mb-1 text-yellow-800">Voting Ends Nov 19</div>
+                <span class="countdown-timer text-2xl font-bold text-gray-800">Loading...</span>
+              </div>
+              
+              <p class="text-xs text-gray-500 max-w-md mx-auto lg:mx-0 leading-relaxed">
+                Caldera is a 501(c)(3) nonprofit organization and your contributions are tax-deductible as allowable by law.
+              </p>
             </div>
           </div>
           
