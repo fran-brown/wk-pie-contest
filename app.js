@@ -22,7 +22,7 @@ const CONFIG = {
     // Karaoke Group
     "Caleb Jensen": 1, 
     "Jane Monaghan": 10,
-    "Ellie Jones": 99,
+    "Ellie Jones": 109,
     "Katie Schaller": 5,
     "Mariah Mercier": 60,
     "Nai Lucifora": 15,
@@ -31,27 +31,28 @@ const CONFIG = {
     "Melissa Dollar": 19,
     "Gelareh Dehnad": 143,
     "Jared Randle": 42,
-    "Fran Brown": 41,
-    "Laura Wood": 1,
+    "Fran Brown": 46,
+    "Laura Wood": 21,
     "Siobhan Robinson": 20,
     "David Henriquez": 11,
     "Felipe Riberio": 1,
     // Lip Sync Group
     "MJ": 21,
     "Maisie Plew": 40,
-    "Lindsay Varquez": 0,
+    "Lindsay Varquez": 25,
     "Galen Kary": 10,
-    "Paige Fitzmaurice": 69,
-    "Jacobi Mehringer": 0,
+    "Paige Fitzmaurice": 95,
+    "Jacobi Mehringer": 5,
     "Ada Jackson": 25,
     "Will Curtis": 1,
-    "Eloe Gill-Williams": 0,
-    "Lauren Hill Vaughan": 0,
+    "Eloe Gill-Williams": 15,
+    "Lauren Hill Vaughan": 5,
     "Paris Fontes-Michel": 30,
-    "Maile Levy": 10,
-    "Jojo Ball": 20,
+    "Maile Levy": 17,
+    "Jojo Ball": 30,
+    "Ian Groom": 20,
     "Jovan Lim & Priya Moorthy": 1,
-    "Tasha Danner": 0
+    "Tasha Danner": 1
   },
 
   // Brand colors
@@ -75,10 +76,10 @@ const CONFIG = {
     ],
     // Round 2 (4 matches, 8 contestants)
     round2: [
-      { team1: 'Jane Monagha', team2: 'Ellie Jones' },
+      { team1: 'Jane Monaghan', team2: 'Ellie Jones' },
       { team1: 'Mariah Mercier', team2: 'Jason Strickland' },
       { team1: 'Gelareh Dehnad', team2: 'Fran Brown' },
-      { team1: 'Siobhan Robinson', team2: 'David Henriquez' },
+      { team1: 'Laura Wood', team2: 'David Henriquez' },
     ],
     // Round 3 (2 matches, 4 contestants)
     round3: [
@@ -101,10 +102,10 @@ const CONFIG = {
       { team1: 'Jovan Lim & Priya Moorthy', team2: 'Tasha Danner' },
     ],
     round2: [
-      { team1: 'Maisie Plew', team2: 'Galen Kary' },
+      { team1: 'Maisie Plew', team2: 'Lindsay Varquez' },
       { team1: 'Paige Fitzmaurice', team2: 'Ada Jackson' },
-      { team1: 'Lauren Hill Vaughan', team2: 'Paris Fontes-Michel' },
-      { team1: 'Ian Groom', team2: 'Jovan Lim & Priya Moorthy' },
+      { team1: 'Eloe Gill-Williams', team2: 'Paris Fontes-Michel' },
+      { team1: 'Jojo Ball', team2: 'Jovan Lim & Priya Moorthy' },
     ],
     round3: [
       { team1: '', team2: '' },
