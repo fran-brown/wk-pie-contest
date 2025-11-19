@@ -16,7 +16,51 @@ const CONFIG = {
 
   // Admin Controls (for testing)
   showAdminControls: false,
+
+  // will be filled in after round 2
+  round2Results: {
+    "Jane Monaghan": 0,
+    "Ellie Jones": 0,
+  },
   
+  // Total amounts raised on round 1 -- CHANGE PER ROUND --
+  round1Results: {
+    // Karaoke Group
+    "Caleb Jensen": 1, 
+    "Jane Monaghan": 10,
+    "Ellie Jones": 109,
+    "Katie Schaller": 5,
+    "Mariah Mercier": 60,
+    "Nai Lucifora": 15,
+    "Jason Strickland": 171,
+    "Lloyd Winter": 1,
+    "Melissa Dollar": 19,
+    "Gelareh Dehnad": 143,
+    "Jared Randle": 42,
+    "Fran Brown": 46,
+    "Laura Wood": 21,
+    "Siobhan Robinson": 20,
+    "David Henriquez": 11,
+    "Felipe Riberio": 1,
+    // Lip Sync Group
+    "MJ": 21,
+    "Maisie Plew": 40,
+    "Lindsay Varquez": 25,
+    "Galen Kary": 10,
+    "Paige Fitzmaurice": 95,
+    "Jacobi Mehringer": 5,
+    "Ada Jackson": 25,
+    "Will Curtis": 1,
+    "Eloe Gill-Williams": 15,
+    "Lauren Hill Vaughan": 5,
+    "Paris Fontes-Michel": 30,
+    "Maile Levy": 17,
+    "Jojo Ball": 30,
+    "Ian Groom": 20,
+    "Jovan Lim & Priya Moorthy": 1,
+    "Tasha Danner": 1
+  },
+
   // Brand colors
   colors: {
     primary: '#72c8f1',
@@ -38,10 +82,10 @@ const CONFIG = {
     ],
     // Round 2 (4 matches, 8 contestants)
     round2: [
-      { team1: '', team2: '' },
-      { team1: '', team2: '' },
-      { team1: '', team2: '' },
-      { team1: '', team2: '' },
+      { team1: 'Jane Monaghan', team2: 'Ellie Jones' },
+      { team1: 'Mariah Mercier', team2: 'Jason Strickland' },
+      { team1: 'Gelareh Dehnad', team2: 'Fran Brown' },
+      { team1: 'Laura Wood', team2: 'David Henriquez' },
     ],
     // Round 3 (2 matches, 4 contestants)
     round3: [
@@ -64,10 +108,10 @@ const CONFIG = {
       { team1: 'Jovan Lim & Priya Moorthy', team2: 'Tasha Danner' },
     ],
     round2: [
-      { team1: '', team2: '' },
-      { team1: '', team2: '' },
-      { team1: '', team2: '' },
-      { team1: '', team2: '' },
+      { team1: 'Maisie Plew', team2: 'Lindsay Varquez' },
+      { team1: 'Paige Fitzmaurice', team2: 'Ada Jackson' },
+      { team1: 'Eloe Gill-Williams', team2: 'Paris Fontes-Michel' },
+      { team1: 'Jojo Ball', team2: 'Jovan Lim & Priya Moorthy' },
     ],
     round3: [
       { team1: '', team2: '' },
@@ -262,7 +306,7 @@ class TournamentBracket {
   async fetchData() {
     try {
       this.error = null;
-      
+
       if (USE_MOCK_DATA) {
         const mockData = generateMockData();
         this.teamData = mockData.teamData;
@@ -270,60 +314,62 @@ class TournamentBracket {
         this.loading = false;
         this.lastUpdate = new Date();
         this.render();
-        return; // Exit function
-      } 
-      
-      // ===================================
-      // START: NETLIFY FETCH LOGIC
-      // ===================================
+        return;
+      }
 
-      // Path to Netlify function
-      const proxiedUrl = '/.netlify/functions/givebutter'; 
-      
+      const proxiedUrl = '/.netlify/functions/givebutter';
       console.log('Fetching from Netlify proxy:', proxiedUrl);
-      
+
       const teamsRes = await fetch(proxiedUrl, {
         method: 'GET',
         headers: { 'Accept': 'application/json' }
       });
 
-      if (!teamsRes.ok) {
-        const errorText = await teamsRes.text();
-        throw new Error(`Proxy error (${teamsRes.status}): ${errorText}`);
-      }
-
+      if (!teamsRes.ok) throw new Error('Proxy error');
       const proxyResponse = await teamsRes.json();
-      
-      // Check if the proxy function returned an error
-      if (proxyResponse.error) {
-          throw new Error(`API Error via proxy: ${proxyResponse.error}`);
-      }
-      
-      // The proxy returns { data: [...] }
+      if (proxyResponse.error) throw new Error(proxyResponse.error);
+
       const allTeams = proxyResponse.data;
-      console.log('All teams fetched via proxy:', allTeams);
-      
       const processedTeams = {};
-      let total = 0;
-      
-      allTeams.forEach(team => {
-        const amount = team.raised || 0; 
+
+      // 1. Calculate Grand Total Base (Sum of R1 + R2)
+      let r1Total = Object.values(CONFIG.round1Results || {}).reduce((a, b) => a + b, 0);
+      let r2Total = Object.values(CONFIG.round2Results || {}).reduce((a, b) => a + b, 0);
+      let grandTotal = r1Total + r2Total;
+
+      // 2. Get list of all known participants (from Config + API)
+      const allNames = new Set([
+        ...Object.keys(CONFIG.round1Results || {}),
+        ...Object.keys(CONFIG.round2Results || {}),
+        ...allTeams.map(t => t.name) // In case of new names
+      ]);
+
+      // 3. Build Data for Everyone
+      allNames.forEach(name => {
+        // Calculate Historical Total (R1 + R2)
+        const histAmount = (CONFIG.round1Results[name] || 0) + (CONFIG.round2Results[name] || 0);
         
-        processedTeams[team.name] = {
-          name: team.name,
-          total_donations: amount,           // Map 'raised' to 'total_donations'
-          donor_count: team.supporters || 0, // Map 'supporters' to 'donor_count'
-          url: team.url
+        // Find Live Data (Round 3)
+        // Matches exact name since you said new teams use same names
+        const liveTeam = allTeams.find(t => t.name === name);
+        const liveAmount = liveTeam ? (liveTeam.raised || 0) : 0;
+        const liveDonors = liveTeam ? (liveTeam.supporters || 0) : 0;
+        const liveUrl = liveTeam ? liveTeam.url : null;
+
+        processedTeams[name] = {
+          name: name,
+          total_donations: liveAmount,       // FOR BRACKET: Only current round money (Resets to 0)
+          accumulated_total: histAmount + liveAmount, // FOR BIO: Cumulative total
+          donor_count: liveDonors,
+          url: liveUrl
         };
-        total += amount;
+
+        // Add live money to grand total
+        grandTotal += liveAmount;
       });
-      
-      // ===================================
-      // END: NETLIFY FETCH LOGIC
-      // ===================================
-        
+
       this.teamData = processedTeams;
-      this.totalRaised = total;
+      this.totalRaised = grandTotal;
       this.loading = false;
       this.lastUpdate = new Date();
       this.render();
@@ -346,75 +392,76 @@ class TournamentBracket {
   }
   
   renderMatchup(match, matchIndex, roundName) {
-    const team1Data = this.teamData[match.team1] || { total_donations: 0, name: match.team1 };
-    const team2Data = this.teamData[match.team2] || { total_donations: 0, name: match.team2 };
-    
-    const amount1 = team1Data.total_donations || 0;
-    const amount2 = team2Data.total_donations || 0;
+    // Decide which amount to show based on the round name
+    const getRoundAmount = (name) => {
+      if (!name) return 0;
+      if (roundName === 'Round 1') return CONFIG.round1Results[name] || 0;
+      if (roundName === 'Quarter Finals') return CONFIG.round2Results[name] || 0;
+      // Default: Semi Finals and Finals use live data
+      return (this.teamData[name] && this.teamData[name].total_donations) || 0;
+    };
+
+    const team1Name = match.team1;
+    const team2Name = match.team2;
+    const team1Data = this.teamData[team1Name] || {};
+    const team2Data = this.teamData[team2Name] || {};
+
+    const amount1 = getRoundAmount(team1Name);
+    const amount2 = getRoundAmount(team2Name);
     const maxAmount = Math.max(amount1, amount2, 1);
-    
+
     const isWinner1 = amount1 > amount2;
     const isWinner2 = amount2 > amount1;
-    
-    if (!match.team1 && !match.team2) {
+
+    if (!team1Name && !team2Name) {
       return `
         <div class="bg-white rounded-lg p-4 mb-4 border-2 border-dashed border-gray-300">
           <div class="text-gray-400 text-center text-sm">TBD</div>
         </div>
       `;
     }
-    
+
     return `
       <div class="bg-white rounded-lg shadow-md overflow-hidden mb-4" style="border: 3px solid ${isWinner1 || isWinner2 ? CONFIG.colors.yellow : '#e5e7eb'};">
         <div class="p-3 border-b relative" style="background-color: ${isWinner1 ? CONFIG.colors.yellow : 'white'}; border-bottom: 1px solid #e5e7eb;">
           ${isWinner1 ? '<div class="absolute left-2 top-2 text-2xl">👑</div>' : ''}
-          <div class="flex items-center justify-between ${match.team1 ? '' : 'opacity-50'}">
+          <div class="flex items-center justify-between ${team1Name ? '' : 'opacity-50'}">
             <div class="flex-1" style="padding-left: ${isWinner1 ? '32px' : '0'};">
-              <div class="font-semibold text-sm" style="color: #333;">
-                ${match.team1 || 'TBD'}
-              </div>
-              <div class="text-xs" style="color: #666;">${team1Data.donor_count || 0} donors</div>
-              
-              ${team1Data.url ? `
-                <a href="${team1Data.url}" target="_blank" rel="noopener noreferrer" 
-                   class="inline-block text-xs text-white px-2 py-0.5 rounded mt-1 transition-all hover:opacity-80" 
-                   style="background-color: ${CONFIG.colors.primary};">
-                  Donate
-                </a>
+              <div class="font-semibold text-sm" style="color: #333;">${team1Name || 'TBD'}</div>
+              ${(roundName !== 'Round 1' && roundName !== 'Quarter Finals') ? `
+                <div class="text-xs" style="color: #666;">${team1Data.donor_count || 0} donors</div>
+                ${team1Data.url ? `
+                  <a href="${team1Data.url}" target="_blank" rel="noopener noreferrer" 
+                     class="inline-block text-xs text-white px-2 py-0.5 rounded mt-1 hover:opacity-80" 
+                     style="background-color: ${CONFIG.colors.primary};">Donate</a>
+                ` : ''}
               ` : ''}
-              </div>
+            </div>
             <div class="text-right">
-              <div class="font-bold" style="color: #333;">
-                ${this.formatCurrency(amount1)}
-              </div>
+              <div class="font-bold" style="color: #333;">${this.formatCurrency(amount1)}</div>
               <div class="w-24 bg-gray-200 rounded-full h-2 mt-1">
                 <div class="h-2 rounded-full transition-all duration-500" style="width: ${(amount1 / maxAmount) * 100}%; background-color: #333;"></div>
               </div>
             </div>
           </div>
         </div>
-        
+
         <div class="p-3 relative" style="background-color: ${isWinner2 ? CONFIG.colors.yellow : 'white'};">
           ${isWinner2 ? '<div class="absolute left-2 top-2 text-2xl">👑</div>' : ''}
-          <div class="flex items-center justify-between ${match.team2 ? '' : 'opacity-50'}">
+          <div class="flex items-center justify-between ${team2Name ? '' : 'opacity-50'}">
             <div class="flex-1" style="padding-left: ${isWinner2 ? '32px' : '0'};">
-              <div class="font-semibold text-sm" style="color: #333;">
-                ${match.team2 || 'TBD'}
-              </div>
-              <div class="text-xs" style="color: #666;">${team2Data.donor_count || 0} donors</div>
-
-              ${team2Data.url ? `
-                <a href="${team2Data.url}" target="_blank" rel="noopener noreferrer" 
-                   class="inline-block text-xs text-white px-2 py-0.5 rounded mt-1 transition-all hover:opacity-80" 
-                   style="background-color: ${CONFIG.colors.primary};">
-                  Donate
-                </a>
+              <div class="font-semibold text-sm" style="color: #333;">${team2Name || 'TBD'}</div>
+              ${(roundName !== 'Round 1' && roundName !== 'Quarter Finals') ? `
+                <div class="text-xs" style="color: #666;">${team2Data.donor_count || 0} donors</div>
+                ${team2Data.url ? `
+                  <a href="${team2Data.url}" target="_blank" rel="noopener noreferrer" 
+                     class="inline-block text-xs text-white px-2 py-0.5 rounded mt-1 hover:opacity-80" 
+                     style="background-color: ${CONFIG.colors.primary};">Donate</a>
+                ` : ''}
               ` : ''}
-              </div>
+            </div>
             <div class="text-right">
-              <div class="font-bold" style="color: #333;">
-                ${this.formatCurrency(amount2)}
-              </div>
+              <div class="font-bold" style="color: #333;">${this.formatCurrency(amount2)}</div>
               <div class="w-24 bg-gray-200 rounded-full h-2 mt-1">
                 <div class="h-2 rounded-full transition-all duration-500" style="width: ${(amount2 / maxAmount) * 100}%; background-color: #333;"></div>
               </div>
@@ -426,9 +473,10 @@ class TournamentBracket {
   }
   
   renderBracket(bracket, title, color) {
+    // Moved quarter finals first -- CHANGE PER NEW ROUND --
     const rounds = [
-      { name: 'Round 1', matches: bracket.round1 },
       { name: 'Quarter Finals', matches: bracket.round2 },
+      { name: 'Round 1', matches: bracket.round1 },
       { name: 'Semi Finals', matches: bracket.round3 },
       { name: 'Finals', matches: [bracket.finals] }
     ];
@@ -437,9 +485,6 @@ class TournamentBracket {
       <div class="mb-12">
         <div class="text-center mb-6">
           <h2 class="text-5xl font-bold mb-3" style="color: ${color};">${title}</h2>
-          <div class="inline-block text-white px-6 py-2 rounded-full" style="background-color: ${color};">
-            <span class="text-lg font-semibold">16 Contestants</span>
-          </div>
         </div>
         
         <div class="grid grid-cols-1 gap-6">
@@ -448,11 +493,7 @@ class TournamentBracket {
               <h3 class="text-2xl font-bold mb-4 text-center sticky top-0 py-3 z-10 bg-white" style="color: ${color}; border-bottom: 3px solid ${color};">
                 ${round.name}
               </h3>
-              ${round.name === 'Round 1' ? `
-              <div class="text-center text-lg text-gray-700 mb-4 p-3 rounded-lg" style="background-color: #fff56d; border: 2px solid #e6cb00;">
-                <span class="countdown-timer">Loading countdown...</span>
-              </div>
-            ` : ''}
+              
               <div class="space-y-4">
                 ${round.matches.map((match, matchIndex) => 
                   this.renderMatchup(match, matchIndex, round.name)
@@ -577,8 +618,7 @@ class TournamentBracket {
                 
                 <div class="flex justify-between items-center mb-4 text-sm">
                   <div class="text-gray-700">
-                    <span class="font-bold text-lg" style="color: #333;">${this.formatCurrency(raised)}</span> raised
-                  </div>
+                    <span class="font-bold text-lg" style="color: #333;">${this.formatCurrency(teamData.accumulated_total || 0)}</span> raised                  </div>
                   <div class="text-gray-500">${donors} donors</div>
                 </div>
                 
@@ -624,7 +664,7 @@ class TournamentBracket {
     if (ended) {
       html = '<strong>Voting has ended!</strong>';
     } else {
-      html = `<strong>${days}</strong> days, <strong>${hours}</strong> hours left to vote!`;
+      html = `${days} days, ${hours} hours left to vote!`;
     }
     
     const timers = document.querySelectorAll('.countdown-timer');
@@ -693,12 +733,15 @@ class TournamentBracket {
               </div>
             </div>
             
-            <div class="mt-6 text-sm text-center lg:text-left" style="color: #333;">
-              <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-              </svg>
-              Last updated: ${this.lastUpdate.toLocaleTimeString()}
-              ${USE_MOCK_DATA ? `<span class="font-semibold" style="color: #333;">🧪 MOCK DATA</span>` : ''}
+            <div class="mt-2 text-center lg:text-left">
+              <div class="inline-block px-6 py-3 mb-3 shadow-sm" style="background-color: ${CONFIG.colors.yellow};">
+                <div class="text-xs font-bold uppercase tracking-wider mb-1 text-gray-800">Voting Ends Nov 18 at 10pm PST</div>
+                <span class="countdown-timer text-xl font-bold text-gray-800">Loading...</span>
+              </div>
+              
+              <p class="text-xs text-gray-500 max-w-md mx-auto lg:mx-0 leading-relaxed">
+                Caldera is a 501(c)(3) nonprofit organization and your contributions are tax-deductible as allowable by law.
+              </p>
             </div>
           </div>
           
