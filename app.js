@@ -75,10 +75,10 @@ const CONFIG = {
     ],
     // Round 2 (4 matches, 8 contestants)
     round2: [
-      { team1: '', team2: '' },
-      { team1: '', team2: '' },
-      { team1: '', team2: '' },
-      { team1: '', team2: '' },
+      { team1: 'Jane Monagha', team2: 'Ellie Jones' },
+      { team1: 'Mariah Mercier', team2: 'Jason Strickland' },
+      { team1: 'Gelareh Dehnad', team2: 'Fran Brown' },
+      { team1: 'Siobhan Robinson', team2: 'David Henriquez' },
     ],
     // Round 3 (2 matches, 4 contestants)
     round3: [
@@ -101,10 +101,10 @@ const CONFIG = {
       { team1: 'Jovan Lim & Priya Moorthy', team2: 'Tasha Danner' },
     ],
     round2: [
-      { team1: '', team2: '' },
-      { team1: '', team2: '' },
-      { team1: '', team2: '' },
-      { team1: '', team2: '' },
+      { team1: 'Maisie Plew', team2: 'Galen Kary' },
+      { team1: 'Paige Fitzmaurice', team2: 'Ada Jackson' },
+      { team1: 'Lauren Hill Vaughan', team2: 'Paris Fontes-Michel' },
+      { team1: 'Ian Groom', team2: 'Jovan Lim & Priya Moorthy' },
     ],
     round3: [
       { team1: '', team2: '' },
