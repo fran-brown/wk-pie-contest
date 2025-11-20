@@ -129,7 +129,7 @@ const CONFIG = {
       image: "images/Caleb Jensen.png"
     },
     "Jane Monaghan": {
-      bio: "",
+      bio: "Just one of W+K's legion of unsung heroes, ready to sing my heart out for Caldera and you.",
       image: "images/Jane Monaghan.png"
     },
     "Ellie Jones": {
@@ -239,7 +239,7 @@ const CONFIG = {
       image: "images/Maile Levy.jpeg"
     },
     "Jojo Ball": {
-      bio: "",
+      bio: "As a dedicated member of the Caldera fam, I will be showing my solidarity by letting the Caldera Apprentices choose the song that I will perform as well as the wardrobe. Support the creativity of our youth with your pocket change!",
       image: "images/Jojo Ball.jpg"
     },
     "Ian Groom": {
