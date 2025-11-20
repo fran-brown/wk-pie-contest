@@ -392,12 +392,17 @@ class TournamentBracket {
   }
   
   renderMatchup(match, matchIndex, roundName) {
-    // Decide which amount to show based on the round name
+    // [MODIFIED] Logic to decide which amount to show
     const getRoundAmount = (name) => {
       if (!name) return 0;
+      
+      // Round 1 is ALWAYS historical (from Config)
       if (roundName === 'Round 1') return CONFIG.round1Results[name] || 0;
-      if (roundName === 'Quarter Finals') return CONFIG.round2Results[name] || 0;
-      // Default: Semi Finals and Finals use live data
+      
+      // [CHANGED] Quarter Finals is now LIVE, so we use the live teamData
+      // (Removed the line that forced it to look at CONFIG.round2Results)
+      
+      // Default: Quarter Finals, Semi Finals, and Finals use live data
       return (this.teamData[name] && this.teamData[name].total_donations) || 0;
     };
 
@@ -428,7 +433,8 @@ class TournamentBracket {
           <div class="flex items-center justify-between ${team1Name ? '' : 'opacity-50'}">
             <div class="flex-1" style="padding-left: ${isWinner1 ? '32px' : '0'};">
               <div class="font-semibold text-sm" style="color: #333;">${team1Name || 'TBD'}</div>
-              ${(roundName !== 'Round 1' && roundName !== 'Quarter Finals') ? `
+              
+              ${roundName !== 'Round 1' ? `
                 <div class="text-xs" style="color: #666;">${team1Data.donor_count || 0} donors</div>
                 ${team1Data.url ? `
                   <a href="${team1Data.url}" target="_blank" rel="noopener noreferrer" 
@@ -436,6 +442,7 @@ class TournamentBracket {
                      style="background-color: ${CONFIG.colors.primary};">Donate</a>
                 ` : ''}
               ` : ''}
+              
             </div>
             <div class="text-right">
               <div class="font-bold" style="color: #333;">${this.formatCurrency(amount1)}</div>
@@ -451,7 +458,8 @@ class TournamentBracket {
           <div class="flex items-center justify-between ${team2Name ? '' : 'opacity-50'}">
             <div class="flex-1" style="padding-left: ${isWinner2 ? '32px' : '0'};">
               <div class="font-semibold text-sm" style="color: #333;">${team2Name || 'TBD'}</div>
-              ${(roundName !== 'Round 1' && roundName !== 'Quarter Finals') ? `
+              
+              ${roundName !== 'Round 1' ? `
                 <div class="text-xs" style="color: #666;">${team2Data.donor_count || 0} donors</div>
                 ${team2Data.url ? `
                   <a href="${team2Data.url}" target="_blank" rel="noopener noreferrer" 
@@ -459,6 +467,7 @@ class TournamentBracket {
                      style="background-color: ${CONFIG.colors.primary};">Donate</a>
                 ` : ''}
               ` : ''}
+              
             </div>
             <div class="text-right">
               <div class="font-bold" style="color: #333;">${this.formatCurrency(amount2)}</div>
