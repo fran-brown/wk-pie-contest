@@ -494,7 +494,6 @@ class TournamentBracket {
   }
   
   renderBracket(bracket, title, color) {
-    // [MODIFIED] Changed order: Semi Finals is now first
     const rounds = [
       { name: 'Semi Finals', matches: bracket.round3 },
       { name: 'Quarter Finals', matches: bracket.round2 },
@@ -509,19 +508,35 @@ class TournamentBracket {
         </div>
         
         <div class="grid grid-cols-1 gap-6">
-          ${rounds.map((round, roundIndex) => `
-            <div>
-              <h3 class="text-2xl font-bold mb-4 text-center sticky top-0 py-3 z-10 bg-white" style="color: ${color}; border-bottom: 3px solid ${color};">
-                ${round.name}
-              </h3>
-              
-              <div class="space-y-4">
-                ${round.matches.map((match, matchIndex) => 
-                  this.renderMatchup(match, matchIndex, round.name)
-                ).join('')}
+          ${rounds.map((round) => {
+            const uniqueId = `${title.replace(/\s+/g, '')}-${round.name.replace(/\s+/g, '')}`;
+            
+            const isCollapsible = round.name === 'Round 1' || round.name === 'Quarter Finals';
+            
+            const headerHtml = isCollapsible 
+              ? `<button 
+                   onclick="document.getElementById('${uniqueId}').classList.toggle('hidden');" 
+                   class="w-full block text-2xl font-bold mb-4 text-center sticky top-0 py-3 z-10 bg-white hover:bg-gray-50 transition-colors cursor-pointer" 
+                   style="color: ${color}; border-bottom: 3px solid ${color};">
+                   ${round.name} <span class="text-base align-middle ml-2 opacity-60">▼</span>
+                 </button>`
+              : `<h3 class="text-2xl font-bold mb-4 text-center sticky top-0 py-3 z-10 bg-white" style="color: ${color}; border-bottom: 3px solid ${color};">
+                   ${round.name}
+                 </h3>`;
+
+            const contentClass = isCollapsible ? 'hidden space-y-4' : 'space-y-4';
+            
+            return `
+              <div>
+                ${headerHtml}
+                <div id="${uniqueId}" class="${contentClass}">
+                  ${round.matches.map((match, matchIndex) => 
+                    this.renderMatchup(match, matchIndex, round.name)
+                  ).join('')}
+                </div>
               </div>
-            </div>
-          `).join('')}
+            `;
+          }).join('')}
         </div>
       </div>
     `;
