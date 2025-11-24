@@ -573,22 +573,18 @@ class TournamentBracket {
   }
 
   fillBracketToStage(baseBracket, stage) {
-    const round1 = baseBracket.round1.slice();
-    let round2 = baseBracket.round2.slice();
-    let round3 = baseBracket.round3.slice();
-    let finals = { ...baseBracket.finals };
-    if (stage >= 1) {
-      const r2Winners = this.computeWinners(round1);
-      round2 = this.pairIntoMatches(r2Winners);
-    }
+    
+    const round1 = baseBracket.round1;
+    const round2 = baseBracket.round2; // Use the manual pairings from Config
+    const round3 = baseBracket.round3; // Use the manual pairings from Config
+    
+    let finals = { team1: '', team2: '' };
+    
     if (stage >= 2) {
-      const r3Winners = this.computeWinners(round2);
-      round3 = this.pairIntoMatches(r3Winners);
+       const r3Winners = this.computeWinners(round3);
+       finals = { team1: r3Winners[0] || '', team2: r3Winners[1] || '' };
     }
-    if (stage >= 3) {
-      const finalWinners = this.computeWinners(round3);
-      finals = { team1: finalWinners[0] || '', team2: finalWinners[1] || '' };
-    }
+
     return { round1, round2, round3, finals };
   }
 
