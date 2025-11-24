@@ -19,8 +19,22 @@ const CONFIG = {
 
   // will be filled in after round 2
   round2Results: {
+    "Paige Fitzmaurice": 145,
+    "Gelareh Dehnad": 62,
+    "Eloe Gill-Williams": 55,
+    "Fran Brown": 40,
+    "Jojo Ball": 35,
+    "David Henriquez": 35,
+    "Ellie Jones": 20,
+    "Maisie Plew": 20,
+    "Ada Jackson": 10,
+    "Paris Fontes-Michel": 10,
+    "Mariah Mercier": 5,
+    "Lindsay Varquez": 3,
     "Jane Monaghan": 0,
-    "Ellie Jones": 0,
+    "Jason Strickland": 0,
+    "Jovan Lim & Priya Moorthy": 0,
+    "Laura Wood": 0,
   },
   
   // Total amounts raised on round 1 -- CHANGE PER ROUND --
@@ -89,8 +103,8 @@ const CONFIG = {
     ],
     // Round 3 (2 matches, 4 contestants)
     round3: [
-      { team1: '', team2: '' },
-      { team1: '', team2: '' },
+      { team1: 'Ellie Jones', team2: 'Mariah Mercier' },
+      { team1: 'Gelareh Dehnad', team2: 'David Henriquez' },
     ],
     // Finals (1 match, 2 contestants)
     finals: { team1: '', team2: '' },
@@ -114,8 +128,8 @@ const CONFIG = {
       { team1: 'Jojo Ball', team2: 'Jovan Lim & Priya Moorthy' },
     ],
     round3: [
-      { team1: '', team2: '' },
-      { team1: '', team2: '' },
+      { team1: 'Maisie Plew', team2: 'Paige Fitzmaurice' },
+      { team1: 'Eloe Gill-Williams', team2: 'Jojo Ball' },
     ],
     finals: { team1: '', team2: '' },
   },
@@ -290,8 +304,8 @@ class TournamentBracket {
     this.loading = true;
     this.error = null;
     this.lastUpdate = new Date();
-    this.activeView = 'bracket'; // 'bracket', 'participants'
-    this.bracketStage = { karaoke: 0, lipsync: 0 };
+    this.activeView = 'bracket'; 
+    this.bracketStage = { karaoke: 2, lipsync: 2 }; 
     
     this.init();
   }
@@ -396,13 +410,11 @@ class TournamentBracket {
     const getRoundAmount = (name) => {
       if (!name) return 0;
       
-      // Round 1 is ALWAYS historical (from Config)
+      // Historical Rounds (Hardcoded config)
       if (roundName === 'Round 1') return CONFIG.round1Results[name] || 0;
+      if (roundName === 'Quarter Finals') return CONFIG.round2Results[name] || 0;
       
-      // [CHANGED] Quarter Finals is now LIVE, so we use the live teamData
-      // (Removed the line that forced it to look at CONFIG.round2Results)
-      
-      // Default: Quarter Finals, Semi Finals, and Finals use live data
+      // Live Rounds (Semi Finals & Finals use API data)
       return (this.teamData[name] && this.teamData[name].total_donations) || 0;
     };
 
@@ -434,7 +446,7 @@ class TournamentBracket {
             <div class="flex-1" style="padding-left: ${isWinner1 ? '32px' : '0'};">
               <div class="font-semibold text-sm" style="color: #333;">${team1Name || 'TBD'}</div>
               
-              ${roundName !== 'Round 1' ? `
+              ${(roundName !== 'Round 1' && roundName !== 'Quarter Finals') ? `
                 <div class="text-xs" style="color: #666;">${team1Data.donor_count || 0} donors</div>
                 ${team1Data.url ? `
                   <a href="${team1Data.url}" target="_blank" rel="noopener noreferrer" 
@@ -459,7 +471,7 @@ class TournamentBracket {
             <div class="flex-1" style="padding-left: ${isWinner2 ? '32px' : '0'};">
               <div class="font-semibold text-sm" style="color: #333;">${team2Name || 'TBD'}</div>
               
-              ${roundName !== 'Round 1' ? `
+              ${(roundName !== 'Round 1' && roundName !== 'Quarter Finals') ? `
                 <div class="text-xs" style="color: #666;">${team2Data.donor_count || 0} donors</div>
                 ${team2Data.url ? `
                   <a href="${team2Data.url}" target="_blank" rel="noopener noreferrer" 
@@ -482,11 +494,11 @@ class TournamentBracket {
   }
   
   renderBracket(bracket, title, color) {
-    // Moved quarter finals first -- CHANGE PER NEW ROUND --
+    // [MODIFIED] Changed order: Semi Finals is now first
     const rounds = [
+      { name: 'Semi Finals', matches: bracket.round3 },
       { name: 'Quarter Finals', matches: bracket.round2 },
       { name: 'Round 1', matches: bracket.round1 },
-      { name: 'Semi Finals', matches: bracket.round3 },
       { name: 'Finals', matches: [bracket.finals] }
     ];
     
