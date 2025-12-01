@@ -12,7 +12,7 @@ const CONFIG = {
   refreshInterval: 15000, // 15 seconds
 
   // Deadline with Year/Month/Time
-  deadline: '2025-11-30T20:00:00', 
+  deadline: '2025-12-02T15:00:00', 
 
   // Admin Controls (for testing)
   showAdminControls: false,
@@ -782,7 +782,7 @@ class TournamentBracket {
             
             <div class="mt-2 text-center lg:text-left">
               <div class="inline-block px-6 py-3 mb-3 shadow-sm" style="background-color: ${CONFIG.colors.yellow};">
-                <div class="text-xs font-bold uppercase tracking-wider mb-1 text-gray-800">Voting Ends Nov 30 at 10pm PST</div>
+                <div class="text-xs font-bold uppercase tracking-wider mb-1 text-gray-800">Countdown to the pie off!</div>
                 <span class="countdown-timer text-xl font-bold text-gray-800">Loading...</span>
               </div>
               
