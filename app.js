@@ -17,7 +17,17 @@ const CONFIG = {
   // Admin Controls (for testing)
   showAdminControls: false,
 
-  // will be filled in after round 2
+  round3Results: {
+    "Paige Fitzmaurice": 135,
+    "Gelareh Dehnad": 160,
+    "Eloe Gill-Williams": 0,
+    "Jojo Ball": 10,
+    "Ellie Jones": 94,
+    "Maisie Plew": 105,
+    "Mariah Mercier": 80,
+    "David Henriquez": 100,
+  },
+
   round2Results: {
     "Paige Fitzmaurice": 145,
     "Gelareh Dehnad": 62,
@@ -107,7 +117,7 @@ const CONFIG = {
       { team1: 'Gelareh Dehnad', team2: 'David Henriquez' },
     ],
     // Finals (1 match, 2 contestants)
-    finals: { team1: '', team2: '' },
+    finals: { team1: 'Ellie Jones', team2: 'Gelareh Dehnad' },
   },
   
   lipSyncBracket: {
@@ -131,7 +141,7 @@ const CONFIG = {
       { team1: 'Maisie Plew', team2: 'Paige Fitzmaurice' },
       { team1: 'Eloe Gill-Williams', team2: 'Jojo Ball' },
     ],
-    finals: { team1: '', team2: '' },
+    finals: { team1: 'Paige Fitzmaurice', team2: 'Jojo Ball' },
   },
   
   // Bios and images for participants
@@ -305,7 +315,7 @@ class TournamentBracket {
     this.error = null;
     this.lastUpdate = new Date();
     this.activeView = 'bracket'; 
-    this.bracketStage = { karaoke: 2, lipsync: 2 }; 
+    this.bracketStage = { karaoke: 3, lipsync: 3 }; 
     
     this.init();
   }
@@ -346,25 +356,27 @@ class TournamentBracket {
       const allTeams = proxyResponse.data;
       const processedTeams = {};
 
-      // 1. Calculate Grand Total Base (Sum of R1 + R2)
+      // 1. Calculate Grand Total Base (Sum of R1 + R2 + R3)
+      // [CHANGED] Added Round 3 to the calculation
       let r1Total = Object.values(CONFIG.round1Results || {}).reduce((a, b) => a + b, 0);
       let r2Total = Object.values(CONFIG.round2Results || {}).reduce((a, b) => a + b, 0);
-      let grandTotal = r1Total + r2Total;
+      let r3Total = Object.values(CONFIG.round3Results || {}).reduce((a, b) => a + b, 0);
+      let grandTotal = r1Total + r2Total + r3Total;
 
-      // 2. Get list of all known participants (from Config + API)
       const allNames = new Set([
         ...Object.keys(CONFIG.round1Results || {}),
         ...Object.keys(CONFIG.round2Results || {}),
-        ...allTeams.map(t => t.name) // In case of new names
+        ...Object.keys(CONFIG.round3Results || {}),
+        ...allTeams.map(t => t.name)
       ]);
 
-      // 3. Build Data for Everyone
       allNames.forEach(name => {
-        // Calculate Historical Total (R1 + R2)
-        const histAmount = (CONFIG.round1Results[name] || 0) + (CONFIG.round2Results[name] || 0);
+        // Calculate Historical Total
+        const histAmount = (CONFIG.round1Results[name] || 0) + 
+                           (CONFIG.round2Results[name] || 0) + 
+                           (CONFIG.round3Results[name] || 0);
         
-        // Find Live Data (Round 3)
-        // Matches exact name since you said new teams use same names
+        // Find Live Data (Finals)
         const liveTeam = allTeams.find(t => t.name === name);
         const liveAmount = liveTeam ? (liveTeam.raised || 0) : 0;
         const liveDonors = liveTeam ? (liveTeam.supporters || 0) : 0;
@@ -406,15 +418,17 @@ class TournamentBracket {
   }
   
   renderMatchup(match, matchIndex, roundName) {
-    // [MODIFIED] Logic to decide which amount to show
+    // Logic to decide which amount to show
     const getRoundAmount = (name) => {
       if (!name) return 0;
       
       // Historical Rounds (Hardcoded config)
       if (roundName === 'Round 1') return CONFIG.round1Results[name] || 0;
       if (roundName === 'Quarter Finals') return CONFIG.round2Results[name] || 0;
+      // [CHANGED] Added Semi Finals to historical check
+      if (roundName === 'Semi Finals') return CONFIG.round3Results[name] || 0;
       
-      // Live Rounds (Semi Finals & Finals use API data)
+      // Live Rounds (Finals use API data)
       return (this.teamData[name] && this.teamData[name].total_donations) || 0;
     };
 
@@ -429,6 +443,9 @@ class TournamentBracket {
 
     const isWinner1 = amount1 > amount2;
     const isWinner2 = amount2 > amount1;
+
+    // Check if we should show buttons (Only for Finals)
+    const showButtons = roundName === 'Finals';
 
     if (!team1Name && !team2Name) {
       return `
@@ -446,7 +463,7 @@ class TournamentBracket {
             <div class="flex-1" style="padding-left: ${isWinner1 ? '32px' : '0'};">
               <div class="font-semibold text-sm" style="color: #333;">${team1Name || 'TBD'}</div>
               
-              ${(roundName !== 'Round 1' && roundName !== 'Quarter Finals') ? `
+              ${showButtons ? `
                 <div class="text-xs" style="color: #666;">${team1Data.donor_count || 0} donors</div>
                 ${team1Data.url ? `
                   <a href="${team1Data.url}" target="_blank" rel="noopener noreferrer" 
@@ -471,7 +488,7 @@ class TournamentBracket {
             <div class="flex-1" style="padding-left: ${isWinner2 ? '32px' : '0'};">
               <div class="font-semibold text-sm" style="color: #333;">${team2Name || 'TBD'}</div>
               
-              ${(roundName !== 'Round 1' && roundName !== 'Quarter Finals') ? `
+              ${showButtons ? `
                 <div class="text-xs" style="color: #666;">${team2Data.donor_count || 0} donors</div>
                 ${team2Data.url ? `
                   <a href="${team2Data.url}" target="_blank" rel="noopener noreferrer" 
@@ -494,11 +511,12 @@ class TournamentBracket {
   }
   
   renderBracket(bracket, title, color) {
+    // [CHANGED] Order: Finals first
     const rounds = [
+      { name: 'Finals', matches: [bracket.finals] },
       { name: 'Semi Finals', matches: bracket.round3 },
       { name: 'Quarter Finals', matches: bracket.round2 },
-      { name: 'Round 1', matches: bracket.round1 },
-      { name: 'Finals', matches: [bracket.finals] }
+      { name: 'Round 1', matches: bracket.round1 }
     ];
     
     return `
@@ -511,7 +529,10 @@ class TournamentBracket {
           ${rounds.map((round) => {
             const uniqueId = `${title.replace(/\s+/g, '')}-${round.name.replace(/\s+/g, '')}`;
             
-            const isCollapsible = round.name === 'Round 1' || round.name === 'Quarter Finals';
+            // [CHANGED] Added Semi Finals to collapsible list
+            const isCollapsible = round.name === 'Round 1' || 
+                                  round.name === 'Quarter Finals' || 
+                                  round.name === 'Semi Finals';
             
             const headerHtml = isCollapsible 
               ? `<button 
@@ -589,16 +610,10 @@ class TournamentBracket {
 
   fillBracketToStage(baseBracket, stage) {
     const round1 = baseBracket.round1;
-    const round2 = baseBracket.round2; // Use manual pairings from Config
-    const round3 = baseBracket.round3; // Use manual pairings from Config
+    const round2 = baseBracket.round2;
+    const round3 = baseBracket.round3;
     
-    // Default to empty so it shows "TBD"
-    let finals = { team1: '', team2: '' };
-    
-    if (stage >= 3) {
-       const r3Winners = this.computeWinners(round3);
-       finals = { team1: r3Winners[0] || '', team2: r3Winners[1] || '' };
-    }
+    const finals = baseBracket.finals;
 
     return { round1, round2, round3, finals };
   }
