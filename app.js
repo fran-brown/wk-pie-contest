@@ -711,7 +711,7 @@ class TournamentBracket {
     if (ended) {
       html = '<strong>Voting has ended!</strong>';
     } else {
-      html = `${days} day, ${hours} hours left to vote!`;
+      html = `Last day to vote!`;
     }
     
     const timers = document.querySelectorAll('.countdown-timer');
