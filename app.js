@@ -6,6 +6,9 @@ const USE_MOCK_DATA = false; // Set to true for testing without API
 const CONFIG = {
   // Givebutter API info
   campaignId: '516562',
+
+  // Hide all donate buttons/timers
+  campaignEnded: true,
   
   // Fundraising goal
   goalAmount: 80000,
@@ -314,7 +317,9 @@ class TournamentBracket {
     this.loading = true;
     this.error = null;
     this.lastUpdate = new Date();
-    this.activeView = 'bracket'; 
+    
+    this.activeView = 'home'; // 'home', 'bracket', 'participants' are all da tabs
+    
     this.bracketStage = { karaoke: 3, lipsync: 3 }; 
     
     this.init();
@@ -418,17 +423,14 @@ class TournamentBracket {
   }
   
   renderMatchup(match, matchIndex, roundName) {
-    // Logic to decide which amount to show
     const getRoundAmount = (name) => {
       if (!name) return 0;
       
       // Historical Rounds (Hardcoded config)
       if (roundName === 'Round 1') return CONFIG.round1Results[name] || 0;
       if (roundName === 'Quarter Finals') return CONFIG.round2Results[name] || 0;
-      // [CHANGED] Added Semi Finals to historical check
       if (roundName === 'Semi Finals') return CONFIG.round3Results[name] || 0;
       
-      // Live Rounds (Finals use API data)
       return (this.teamData[name] && this.teamData[name].total_donations) || 0;
     };
 
@@ -445,7 +447,7 @@ class TournamentBracket {
     const isWinner2 = amount2 > amount1;
 
     // Check if we should show buttons (Only for Finals)
-    const showButtons = roundName === 'Finals';
+    const showButtons = !CONFIG.campaignEnded && roundName === 'Finals';
 
     if (!team1Name && !team2Name) {
       return `
@@ -669,7 +671,7 @@ class TournamentBracket {
                   <div class="text-gray-500">${donors} donors</div>
                 </div>
                 
-                ${teamData.url ? `
+                ${!CONFIG.campaignEnded && teamData.url ? `
                   <a href="${teamData.url}" target="_blank" rel="noopener noreferrer" 
                      class="block w-full text-center text-white px-4 py-2 rounded font-semibold transition-all hover:opacity-80" 
                      style="background-color: ${CONFIG.colors.primary};">
@@ -794,12 +796,19 @@ class TournamentBracket {
           
           <!-- View Toggle -->
           <div class="flex justify-center mb-8">
-            <div class="inline-flex bg-white rounded-lg p-1 shadow-md">
+            <div class="inline-flex bg-white rounded-lg p-1 shadow-md flex-wrap justify-center">
+              <button id="view-home" class="px-6 py-2 rounded-md font-semibold transition-all text-sm" 
+                      style="background-color: ${this.activeView === 'home' ? '#333' : 'transparent'}; 
+                             color: ${this.activeView === 'home' ? 'white' : '#333'};">
+                Home
+              </button>
+              
               <button id="view-bracket" class="px-6 py-2 rounded-md font-semibold transition-all text-sm" 
                       style="background-color: ${this.activeView === 'bracket' ? '#333' : 'transparent'}; 
                              color: ${this.activeView === 'bracket' ? 'white' : '#333'};">
-                Bracket View
+                Bracket Results
               </button>
+              
               <button id="view-participants" class="px-6 py-2 rounded-md font-semibold transition-all text-sm" 
                       style="background-color: ${this.activeView === 'participants' ? '#333' : 'transparent'}; 
                              color: ${this.activeView === 'participants' ? 'white' : '#333'};">
@@ -808,9 +817,28 @@ class TournamentBracket {
             </div>
           </div>
           
-          <!-- Brackets -->
           <div class="max-w-[1600px] mx-auto">
-            ${this.activeView === 'bracket' ? `
+            ${this.activeView === 'home' ? `
+              <div class="max-w-2xl mx-auto text-center py-12 px-6 bg-white rounded-2xl shadow-lg mt-8">
+                <h2 class="text-3xl font-bold mb-6 font-display" style="color: ${CONFIG.colors.primary};">
+                  Campaign Ended
+                </h2>
+                <div class="w-16 h-1 bg-gray-200 mx-auto mb-8 rounded-full"></div>
+                <p class="text-lg text-gray-700 leading-relaxed mb-8">
+                  This campaign has ended. Thank you to Caldera, our amazing lip sync and karaoke performers, and all those who donated.
+                </p>
+                <div class="p-6 bg-gray-50 rounded-xl border border-gray-100">
+                  <p class="font-medium text-gray-800 mb-2">To continue supporting Caldera please visit their donation page:</p>
+                  <a href="https://www.caldera.org/get-involved/ways-to-donate" 
+                     target="_blank" 
+                     rel="noopener noreferrer"
+                     class="inline-block px-8 py-3 rounded-full text-white font-bold transition-transform hover:scale-105 shadow-md mt-2"
+                     style="background-color: ${CONFIG.colors.orange || '#f97316'};">
+                     CLICK HERE
+                  </a>
+                </div>
+              </div>
+            ` : this.activeView === 'bracket' ? `
               <div class="lg:grid lg:grid-cols-2 lg:gap-8">
                 ${this.renderBracket(this.fillBracketToStage(CONFIG.karaokeBracket, this.bracketStage.karaoke), 'Karaoke Battle', '#333')}
                 ${this.renderBracket(this.fillBracketToStage(CONFIG.lipSyncBracket, this.bracketStage.lipsync), 'Lip Sync Battle', '#333')}
@@ -881,8 +909,11 @@ class TournamentBracket {
   }
   
   attachEventListeners() {
+    const viewHome = document.getElementById('view-home');
     const viewBracket = document.getElementById('view-bracket');
     const viewParticipants = document.getElementById('view-participants');
+    
+    if (viewHome) viewHome.onclick = () => { this.activeView = 'home'; this.render(); };
     
     if (viewBracket) viewBracket.onclick = () => { this.activeView = 'bracket'; this.render(); };
     if (viewParticipants) viewParticipants.onclick = () => { this.activeView = 'participants'; this.render(); };
